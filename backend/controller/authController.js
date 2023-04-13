@@ -63,7 +63,7 @@ exports.login = catchAsync(async(req, res, next) => {
     }
     const user = await User.findOne({email: email}).select('+password');
     if(!user){
-        return next(new AppError('User doesnot exist', 401));
+            res.send({message:"Enter Correct email"})
     }
     //check if password is correct
     if(user){
@@ -72,7 +72,7 @@ exports.login = catchAsync(async(req, res, next) => {
             createSendToken(user, 200, req, res);
         }
         else{
-            return next(new AppError('Password is incorrect', 401));
+            res.send({message:"Enter Correct Password"})
         }
     }
 })

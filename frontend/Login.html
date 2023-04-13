@@ -11,7 +11,8 @@
 
 <body>
     <form method="post" class="container" id='login-form'onsubmit=" return validation()">
-        <h1>Please Login</h1>
+    
+        <h1 id='error'>Please Login</h1>
         <form>
             <div class="form-control">
                 <input id="email" type="text">
@@ -48,12 +49,19 @@
                     });
     
                     const data = await response.json();
-                    document.cookie = `token=${data.token}`;
-                    window.location.href= 'index.html'
+                    console.log(data)
+                    if(data.status){
+                        document.cookie = `token=${data.token}`;
+                        window.location.href= 'index.html'
+                    }else{
+                      const errorshower = document.getElementById('error')
+                      errorshower.innerText = data.message
+                     
+                    }
                 } catch (error) {
                     console.log(error);
                 }
-            });
+            })
         </script>
 
 </body>

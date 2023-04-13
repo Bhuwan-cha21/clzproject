@@ -26,6 +26,9 @@
                 <li><a href="#media">Media</a></li>
                 <li><a href="#contact">Contact Us</a></li>
                 <li ><a id="nameorlogin" href="./Login.html">Login</a></li>
+                <li ><a id="addtour"   style="display: none;"  href="./addtour.html">Add tour</a></li>
+                <li ><a id="adduser"  style="display: none;"  href="./SignUp.html">Add Admin</a></li>
+
             </ul>
             <div class="btn-group">
                 <a href="#" class="btn btn-try">
@@ -361,17 +364,40 @@
 
 </body>
      <script>
-                   
+       const getuserid  = async () =>{
+            try{
+                const response =  await fetch('http://localhost:3000/api/v1/users/getuserfromtoken', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json'
+                                },
+                                body: JSON.stringify({
+                                    token:getCookie('token')
+                                })
+                            })
+                const data =  await response.json()
+                return data
+            }
+            catch(err){
+                console.log(err)
+            }
+        } 
+        function deleteCookie(name) {
+            document.cookie = name + '=;expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+        }                  
         const resultsDiv = document.getElementById('main-container')
-        fetch('http://localhost:3000/api/v1/tours')
-       .then(response => response.json())
-       .then(data => {
+        
+        fetch('http://localhost:3000/api/v1/tours',{
+            method:'GET'
+        })
+            .then(response => response.json())
+            .then(data => {
         
         
-        data.data.forEach(tour => {
-         const tourDiv = document.createElement('div');
-         tourDiv.innerHTML = `
-         <div class="tour-cards">
+            data.data.forEach(tour => {
+            const tourDiv = document.createElement('div');
+            tourDiv.innerHTML = `
+            <div class="tour-cards">
                         <div class="image-box">
                             <img src="https://images.unsplash.com/photo-1491466424936-e304919aada7?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=869&q=80"
                                 alt="Stakkholtsgja canyon ">
@@ -385,26 +411,32 @@
                         <div class="tour-cards-text">
                             <h1>${tour.name}</h1>
                             <p>${tour.summary}</p>
-                            <a href="#" class="btn-map">
-
-                                <span>View Route Map</span>
-                            </a>
                             <div class="price">
                                 <p>${tour.price} <span>Per person</span></p>
-                                <h2>${tour.duration}</h2>
+                                <h2>Duration:${tour.duration}</h2>
                             </div>
                         </div>
-        </div>
+                        
+                        ${ fetch('http://localhost:3000/api/v1/bookings')
+                            .then(response => response.json())
+                            .then
+                        }
+                        <button onClick="booktour('${tour._id}','${tour.price}')">Book Tour</button>
+
+            </div>
       `;
       resultsDiv.appendChild(tourDiv);
-      function getCookie(name) {
-            const cookieValue = document.cookie.match('(^|;)\\s*' + name + '\\s*=\\s*([^;]+)');
-            return cookieValue ? cookieValue.pop() : '';
+    });
+})
+.catch(error => console.error(error));
+function getCookie(name) {
+    const cookieValue = document.cookie.match('(^|;)\\s*' + name + '\\s*=\\s*([^;]+)');
+    return cookieValue ? cookieValue.pop() : '';
                 
-    }
+}
     
-    const ifloggedin  = async () =>{
-       try{
+const ifloggedin  = async () =>{
+    try{
         const response =  await fetch('http://localhost:3000/api/v1/users/getuserfromtoken', {
                         method: 'POST',
                         headers: {
@@ -415,22 +447,91 @@
                         })
                     })
          const data =  await response.json()
+       
          const namediv =  document.getElementById('nameorlogin')
          namediv.href = 'logout.html'
          namediv.innerHTML =  `Logout ${data.name}`
+         namediv.addEventListener('click',() =>{
+                    deleteCookie('token')
+                    namediv.href = 'index.html'
+         })
+        const addtour = document.getElementById('addtour')
+        const adduser = document.getElementById('adduser')
+        if(data.role == 'admin'){
+            console.log(data.role)
+            addtour.style.display = "block";
+        }
+        if(data.role == 'system-admin'){
+            console.log(data.role)
+            adduser.style.display = 'block'
+        }
        }
        catch(err){
         console.log(err)
        }
-    }
-    if(getCookie('token')){
-       console.log(getCookie('token'))
-       ifloggedin()
-    }
+}
+if(getCookie('token')){
+    console.log(getCookie('token'))
+    ifloggedin()
+}
+function deleteCookie(name) {
+  document.cookie = name + '=;expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+}
+async function booktour(tour,price){
+    const user = await getuserid()
+    const userid = user._id
+    const paid = false;
+    try {
+                    const response = await fetch('http://localhost:3000/api/v1/booking', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            tour,
+                            userid,
+                            price,
+                            paid
+
+                        })
+                    });
     
-    });
+                    const data = await response.json();
+                   if(data){
+                       alert('You have booked a tour')
+                   }
+                } catch (error) {
+                    console.log(error);
+                }
+}
+async function canceltour(tour,price){
+    const user = await getuserid()
+    const paid = false;
+    try {
+                    const response = await fetch('http://localhost:3000/api/v1/booking', {
+                        method: 'DELETE',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            tour,
+                            user,
+                            price,
+                            paid
+
+                        })
+                    });
     
-  })
-  .catch(error => console.error(error));
+                    const data = await response.json();
+                    
+                   console.log(data)
+                } catch (error) {
+                    console.log(error);
+                }
+}  
+    
+    
+  
+  
     </script>
 </html>

@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add tour</title>
+    <link rel="stylesheet" href="public/css/addtour.css">
+    <script src="./public/javascript/SignUpValidation.js"></script>
+</head>
+<body>
+    <form id="tour-form" >
+      <label for="name">Name:</label>
+      <input type="text" id="name" name="name" required minlength="10" maxlength="40">
+    
+      <label for="slug">Slug:</label>
+      <input type="text" id="slug" name="slug">
+    
+      <label for="duration">Duration (in days):</label>
+      <input type="number" id="duration" name="duration" required>
+    
+      <label for="max-group-size">Max group size:</label>
+      <input type="number" id="max-group-size" name="maxGroupSize" required>
+    
+      <label for="difficulty">Difficulty:</label>
+      <select id="difficulty" name="difficulty" required>
+        <option value="easy">Easy</option>
+        <option value="medium">Medium</option>
+        <option value="difficult">Difficult</option>
+      </select>
+    
+      <label for="price">Price:</label>
+      <input type="number" id="price" name="price" required>
+    
+      <label for="price-discount">Price discount:</label>
+      <input type="number" id="price-discount" name="priceDiscount">
+    
+      <label for="summary">Summary:</label>
+      <textarea id="summary" name="summary" required></textarea>
+    
+      <label for="description">Description:</label>
+      <textarea id="description" name="description"></textarea>
+    
+      <label for="image-cover">Cover image:</label>
+      <input type="file" id="image-cover" name="imageCover" required><br>
+    
+      <label for="images">Images:</label><br>
+      <input type="file" id="images" name="images"><br>
+    
+      <label for="start-dates">Start dates:</label><br>
+      <input type="date" id="start-dates" name="startDates"><br>
+    
+    
+      <button type="submit">Submit</button>
+    </form>
+
+    <script>
+      function fileToBase64(file) {
+          return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = () => resolve(reader.result);
+            reader.onerror = error => reject(error);
+          });
+      }
+
+        const form = document.getElementById('tour-form');
+        form.addEventListener('submit', async (event) => {
+            event.preventDefault();
+
+            const name = document.getElementById('name').value;
+            const duration = document.getElementById('duration').value;
+            const slug = document.getElementById('slug').value;
+            const maxGroupSize = document.getElementById('max-group-size').value;
+            const difficulty = document.getElementById('difficulty').value;
+            const price = document.getElementById('price').value;
+            const description = document.getElementById('description').value;
+            const imagedata = document.getElementById('image-cover').files[0];
+            const summary = document.getElementById('summary').value;
+            const startDates = document.getElementById('start-dates').value;
+    
+            const imageCover = await fileToBase64(imagedata)
+           
+
+            try {
+                
+                const response = await fetch('http://localhost:3000/api/v1/tours', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({name,duration,slug,maxGroupSize,difficulty,price,description,summary,startDates})
+                });
+
+                const data = await response.json();
+                console.log(data);
+            } catch (error) {
+                console.log(error);
+            }
+        });
+    </script>
+</body>
+</html>

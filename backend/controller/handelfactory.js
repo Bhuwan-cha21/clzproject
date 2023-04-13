@@ -30,7 +30,7 @@ exports.updateOne = (Model) => catchAsync(async (req, res, next) => {
 })
 
 exports.createOne = (Model) => catchAsync(async (req, res, next) => {
-    console.log(Model)
+    console.log(req.body)
     try{
         const doc = await Model.create(req.body);
         res.status(201).json({
@@ -61,13 +61,19 @@ exports.getOne = (Model, popOptions) => catchAsync(async (req, res, next) => {
 })
 
 exports.getAll = (Model) => catchAsync(async (req, res, next) => {
-    const tours = await Model.find()
+    console.log('up')
+   try{
+        const all = await Model.find()
+        console.log('all')
         res.status(200).json({
         status: 'success',
-        data: tours,
+        data: all,
         requestTime: req.requestTime
         })
         next()
+   }catch(err){
+        console.log(err)
+   }
 })
 exports.getUserFromToken = (Model) => catchAsync(async (req, res, next) => {
     const tours = await Model.find()

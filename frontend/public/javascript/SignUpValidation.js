@@ -1,5 +1,5 @@
 function signUpValidation() {
-    var username = document.getElementById('naam').value;
+    var username = document.getElementById('name').value;
     var password = document.getElementById('password').value;
     var cpassword = document.getElementById('cpassword').value;
 

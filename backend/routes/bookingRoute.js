@@ -4,13 +4,12 @@ const router = express.Router();
 const bookingController = require('../controller/bookingController');
 const authController = require('../controller/authController');
 
-router.use(authController.protect);
+
 
 router
     .post('/checkout-session/:tourId', 
     bookingController.getCheckoutSession);
 
-router.use(authController.restrictTo('admin', 'lead-guide'));
 
 router
     .route('/')

@@ -22,13 +22,10 @@ const userSchema = new Schema({
         lowercase: true,
         validate: [validator.isEmail, 'Please provide a valid email']
     },
-    photo: {
-        type: String
-    },
     role: {
         type: String,
-        enum: ['user', 'guide', 'lead-guide', 'admin'],
-        default: 'user'
+        enum: ['user', 'guide', 'admin','system-admin'],
+        default: 'admin'
     },
     password: {
         type: String,

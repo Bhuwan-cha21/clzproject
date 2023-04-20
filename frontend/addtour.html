@@ -28,7 +28,9 @@
         <option value="medium">Medium</option>
         <option value="difficult">Difficult</option>
       </select>
-    
+      <select id="guide" name="guide" required>
+      
+      </select>
       <label for="price">Price:</label>
       <input type="number" id="price" name="price" required>
     
@@ -52,9 +54,15 @@
     
     
       <button type="submit">Submit</button>
+      <a href="index.html">Back to home page</a>
     </form>
 
     <script>
+        function getCookie(name) {
+             const cookieValue = document.cookie.match('(^|;)\\s*' + name + '\\s*=\\s*([^;]+)');
+            return cookieValue ? cookieValue.pop() : '';
+                
+        }
       function fileToBase64(file) {
           return new Promise((resolve, reject) => {
             const reader = new FileReader();
@@ -63,21 +71,52 @@
             reader.onerror = error => reject(error);
           });
       }
+      async function getGuides() {
+       const id = await getCookie('id')
+       console.log(id)
+  try {
+    const response = await fetch('http://localhost:3000/api/v1/users/addedby',{
+            method:'POST',
+            headers: {
+                        'Content-Type': 'application/json'
+                    },
+            body :JSON.stringify({id })
+    });
+    const data = await response.json();
+    console.log(data)
+
+    if (data.status === 'success') {
+      const guides = data.users
+      const guideSelect = document.getElementById('guide');
+
+      for (let i = 0; i < guides.length; i++) {
+        const option = document.createElement('option');
+        option.text = guides[i].name;
+        option.value = guides[i]._id;
+        guideSelect.add(option);
+      }
+    }
+  } catch (error) {
+    console.log(error);
+  }
+}
+     getGuides()
 
         const form = document.getElementById('tour-form');
         form.addEventListener('submit', async (event) => {
             event.preventDefault();
-
             const name = document.getElementById('name').value;
             const duration = document.getElementById('duration').value;
             const slug = document.getElementById('slug').value;
             const maxGroupSize = document.getElementById('max-group-size').value;
             const difficulty = document.getElementById('difficulty').value;
+            const guide = document.getElementById('guide').value;
             const price = document.getElementById('price').value;
             const description = document.getElementById('description').value;
             const imagedata = document.getElementById('image-cover').files[0];
             const summary = document.getElementById('summary').value;
             const startDates = document.getElementById('start-dates').value;
+            const addedBy = await getCookie('id')
     
             const imageCover = await fileToBase64(imagedata)
            
@@ -89,11 +128,13 @@
                     headers: {
                         'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify({name,duration,slug,maxGroupSize,difficulty,price,description,summary,startDates})
+                    body: JSON.stringify({name,duration,slug,maxGroupSize,difficulty,price,description,summary,startDates,addedBy,guide})
                 });
 
                 const data = await response.json();
-                console.log(data);
+                if(data.status == 'success'){
+                    prompt('Tour added successfully')
+                }
             } catch (error) {
                 console.log(error);
             }

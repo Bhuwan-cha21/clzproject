@@ -24,8 +24,8 @@ const userSchema = new Schema({
     },
     role: {
         type: String,
-        enum: ['user', 'guide', 'admin','system-admin'],
-        default: 'admin'
+        enum: ["user", "guide", "admin","system-admin"],
+        default: "user"
     },
     password: {
         type: String,
@@ -35,15 +35,10 @@ const userSchema = new Schema({
     },
     passwordConfirm: {
         type: String,
-        
-        // validate: {
-        //     //this only works on save() and create()
-        //     validator: function(el){
-        //         return bcrypt.compareSync(el, this.password);
-        //     },
-
-        //     message: 'Passwords are not the same'
-        // }
+    },
+    addedBy: {
+        type: Schema.Types.ObjectId,
+        ref: 'User'
     },
     passwordChangedAt: Date,
     passwordResetToken: String,

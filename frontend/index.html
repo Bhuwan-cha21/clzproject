@@ -28,13 +28,9 @@
                 <li ><a id="nameorlogin" href="./Login.html">Login</a></li>
                 <li ><a id="addtour"   style="display: none;"  href="./addtour.html">Add tour</a></li>
                 <li ><a id="adduser"  style="display: none;"  href="./SignUp.html">Add Admin</a></li>
-
+                <li ><a id="addguide"   style="display: none;"  href="./addguide.html">Add Guide</a></li>
             </ul>
-            <div class="btn-group">
-                <a href="#" class="btn btn-try">
-                    <span>Book A Tour</span>
-                </a>
-            </div>
+
         </div>
     </nav>
 
@@ -457,9 +453,11 @@ const ifloggedin  = async () =>{
          })
         const addtour = document.getElementById('addtour')
         const adduser = document.getElementById('adduser')
+        const addguide = document.getElementById('addguide')
         if(data.role == 'admin'){
             console.log(data.role)
             addtour.style.display = "block";
+            addguide.style.display ="block"
         }
         if(data.role == 'system-admin'){
             console.log(data.role)
@@ -478,8 +476,8 @@ function deleteCookie(name) {
   document.cookie = name + '=;expires=Thu, 01 Jan 1970 00:00:01 GMT;';
 }
 async function booktour(tour,price){
-    const user = await getuserid()
-    const userid = user._id
+    const currentuser = await getuserid()
+    const user = currentuser._id
     const paid = false;
     try {
                     const response = await fetch('http://localhost:3000/api/v1/booking', {
@@ -489,7 +487,7 @@ async function booktour(tour,price){
                         },
                         body: JSON.stringify({
                             tour,
-                            userid,
+                            user,
                             price,
                             paid
 

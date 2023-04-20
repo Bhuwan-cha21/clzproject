@@ -54,6 +54,10 @@ const tourSchema = new Schema({
         default: Date.now(),
         select: false
     },
+    addedBy: {
+        type: Schema.Types.ObjectId,
+        ref: 'User'
+    },
     guides: [
         {
             type: mongoose.Schema.ObjectId,

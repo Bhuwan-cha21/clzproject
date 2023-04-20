@@ -11,7 +11,7 @@
 <body>
     <form id="signup-form" class="container" onsubmit="return signUpValidation()">
         <div class="">
-            <h1 id="error">SignUp</h1>
+            <h1>SignUp</h1>
             <div class="form-control">
                 <label for="name">Name</label>
                 <input id="name" name="name" class="" required>
@@ -30,11 +30,16 @@
                 <input type="password" id="cpassword" name="passwordConfirm" required />
             </div>
             <button type="submit" class="btn">SingUp</button>
-            <p class="text">Already have a account?<a href="./Login.html">Login</a></a></p>
+            <a href="index.html">Back to home page</a>
         </div>
     </form>
 
     <script>
+        function getCookie(name) {
+                    const cookieValue = document.cookie.match('(^|;)\\s*' + name + '\\s*=\\s*([^;]+)');
+                    return cookieValue ? cookieValue.pop() : '';
+                
+    }
         const form = document.getElementById('signup-form');
         form.addEventListener('submit', async (event) => {
             event.preventDefault();
@@ -43,6 +48,9 @@
             const email = form.elements['email'].value;
             const password = form.elements['password'].value;
             const passwordConfirm = form.elements['passwordConfirm'].value;
+            const role = 'guide'
+            const addedBy = await getCookie('id')
+    
 
             try {
                 const response = await fetch('http://localhost:3000/api/v1/users/signup', {
@@ -54,20 +62,20 @@
                         name,
                         email,
                         password,
-                        passwordConfirm
+                        passwordConfirm,
+                        role,
+                        addedBy
                     })
                 });
 
                 const data = await response.json();
                 if(data.status == 'success'){
-                    alert('User added successfully,Please Login')
-                    window.location.href= 'login.html'
+                    alert('Guide added successfully')
+                    window.location.href= 'index.html'
                 }else{
                     const errorplacer = document.getElementById('error')
                     errorplacer.innerText = data.message
                 }
-                
-                
             } catch (error) {
                 console.log(error);
             }

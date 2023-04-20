@@ -22,6 +22,7 @@ const createSendToken = async (user, statusCode,req, res) => {
     res.status(statusCode).json({
         status: 'success',
         token,
+        id : user._id,
         data: {
             user: user
         }
@@ -37,14 +38,25 @@ exports.signup = async(req, res, next) => {
             name: req.body.name,
             email: req.body.email,
             password: req.body.password,
-            passwordConfirm: req.body.passwordConfirm
+            passwordConfirm: req.body.passwordConfirm,
+            role : req.body.role,
+            addedBy : req.body.addedBy
         });
         const user = await newUser.save()
 
         createSendToken(user, 200, req, res);
         await new Email(user).sendWelcome();
     }catch(err){
-       console.log(err)
+        if (err.code === 11000 && err.keyPattern.email) {
+            // Handle the duplicate email error
+            res.json({
+                status:"409",
+                message:"User exists,Please choose another email"
+            })
+          } else {
+            // Handle other errors
+            console.error(err);
+          }
     }
 
     

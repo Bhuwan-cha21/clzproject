@@ -16,6 +16,7 @@ const factory = require('./handelfactory');
 //         cb(null, `user-${req.user.id}-${Date.now()}.${ext}`)
 //       }
 // })
+
 const multerStorage = multer.memoryStorage(); //saving image as buffer not in any local storage
 
 const multerFilter = (req, file, cb) => {
@@ -122,5 +123,6 @@ exports.createUser = (req, res) => {
 exports.getUserFromToken = () =>{
     console.log('bhuwan')
 }
+exports.getAddedBy = factory.getAddedBy(User)
 exports.updateUser = factory.updateOne(User);
 exports.deleteUser = factory.deleteOne(User);

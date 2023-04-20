@@ -327,7 +327,21 @@ exports.getToursWithin = catchAsync(async (req, res, next) => {
         data: tours
     })
 })
+exports.searchTour =   catchAsync(async (req, res, next) => { 
+    try {
+        const { q } = req.query;
+        const tours = await Tour.find({
+          $or: [
+            { name: { $regex: q, $options: 'i' } },
+            { summary: { $regex: q, $options: 'i' } },
+          ],
+        });
+        res.status(200).json({ status: 'success', results: tours.length, data: { tours } });
+      } catch (err) {
+        res.status(404).json({ status: 'fail', message: err });
+      
 
+}})
 exports.getDistances = catchAsync(async (req, res, next) => {
     // console.log(req.params);
     const { latlng, unit} = req.params;

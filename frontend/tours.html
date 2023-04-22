@@ -1,263 +1,266 @@
 <!DOCTYPE html>
 <html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Tours</title>
+    <style>
+        .card {
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        padding: 16px;
+        margin-bottom: 16px;
+      }
 
-<head>
-    <meta charset='utf-8'>
-    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
-    <title>Tour and Hotel Recommendation</title>
-    <meta name='viewport' content='width=device-width, initial-scale=1'>
-    <!-- css  -->
-    <link rel="stylesheet" href="public/css/sty.css">
-    <script type="text/javascript" src="./public/javascript/nav.js"></script>
+      .card h2 {
+        margin-top: 0;
+      }
 
+      .card p {
+        margin-top: 8px;
+        margin-bottom: 8px;
+      }
 
-</head>
+      .card button {
+        background-color: #4CAF50;
+        color: white;
+        padding: 8px 16px;
+        margin-right: 8px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+      }
 
-<body>
+      .card button.edit {
+        background-color: #2196F3;
+      }
 
+      .card button.delete {
+        background-color: #F44336;
+      }
 
-    <!-- main  -->
-    <main>
+      .form-container {
+  display: none;
+  position: absolute;
+  z-index: 1;
+  top: 50%;
+  width: 80%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  padding: 16px;
+}
 
-        <!-- banner  -->
+      .form-container.show {
+        display: block;
+      }
 
-        <!-- explore  -->
+      .form-container form {
+        display: flex;
+        flex-direction: column;
+      }
 
-        <!-- about  -->
-        <section class="about" id="about">
-            <!-- tour  -->
-            
-            <section class="tour" id="tour">
-                <div class="main-text">
-                    <h2>2021</h2>
-                    <h1>Tours</h1>
-                </div>
-                <div class="main-container" id="main-container">
-                    <!-- // card 1 -->
-                    
-                    <!-- ------ -->
-                    <!-- card 2 -->
-                    
-                    <!-- ------  -->
+      .form-container input {
+        margin-bottom: 8px;
+        padding: 8px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+      }
 
-                    <!-- cards 3  -->
-                    <div class="tour-cards">
-                        <div class="image-box">
-                            <img src="https://images.unsplash.com/photo-1491466424936-e304919aada7?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=869&q=80"
-                                alt="Stakkholtsgja canyon ">
-                            <div class="overlay"></div>
-                            <div class="image-box-text">
-                                <h2>Stakkholtsgja</h2>
-                                <p>Mountains & Waterfall</p>
-                            </div>
+      .form-container button {
+        background-color: #4CAF50;
+        color: white;
+        padding: 8px 16px;
+        margin-top: 8px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="tours"></div>
+    <div id="tours"></div>
+    <a href="index.html">Back to home</a>
+    <div class="form-container" id="edit-form">
+      <h2>Edit Tour</h2>
+      <form>
+        <label for="name">Name:</label>
+        <input type="text" id="name" />
 
-                        </div>
-                        <div class="tour-cards-text">
-                            <h1>Stakkholtsgja canyon Trip</h1>
-                            <p>A Week long trip around the south iceland with hiking guides. Stakkholtsgjá is a wondrous
-                                canyon, situated in Southern part of the Icelandic Highlands. It is highly-known for the
-                                magical hiking trail that leads to a majestic waterfall. The gorge is a part of the
-                                Þórsmörk
-                                Nature Reserve. Every bit
-                                of Stakkholtsgjá canyon shines out with picturesque beauty. Stakkholtsgjá is about a
-                                hundred
-                                meters deep.</p>
-                            <a href="#" class="btn-map">
+        <label for="duration">Duration:</label>
+        <input type="text" id="duration" />
 
-                                <span>View Route Map</span>
-                            </a>
-                            <div class="price">
-                                <p>$5200 <span>Per person</span></p>
-                                <h2>18 Days 36 Nights</h2>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- ------ -->
-                </div>
-                <button class="btn btn-view-all">
-                    View More
-                </button>
-            </section>
+        <label for="max-group-size">Max Group Size:</label>
+        <input type="text" id="max-group-size" />
 
-    </main>
+        <label for="difficulty">Difficulty:</label>
+        <input type="text" id="difficulty" />
 
+        <label for="price">Price:</label>
+        <input type="text" id="price" />
 
+        <label for="summary">Summary:</label>
+        <textarea id="summary"></textarea>
 
-    </section>
+        <label for="description">Description:</label>
+        <textarea id="description"></textarea>
 
+        <button  id="save-button">Save</button>
+      </form>
+    </div>
 
-
-
-</body>
-     <script>
-       const getuserid  = async () =>{
-            try{
-                const response =  await fetch('http://localhost:3000/api/v1/users/getuserfromtoken', {
-                                method: 'POST',
-                                headers: {
-                                    'Content-Type': 'application/json'
-                                },
-                                body: JSON.stringify({
-                                    token:getCookie('token')
-                                })
-                            })
-                const data =  await response.json()
-                return data
-            }
-            catch(err){
-                console.log(err)
-            }
-        } 
-        function deleteCookie(name) {
-            document.cookie = name + '=;expires=Thu, 01 Jan 1970 00:00:01 GMT;';
-        }                  
-        const resultsDiv = document.getElementById('main-container')
-        
-        fetch('http://localhost:3000/api/v1/tours',{
-            method:'GET'
-        })
-            .then(response => response.json())
-            .then(data => {
-        
-        
-            data.data.forEach(tour => {
-            const tourDiv = document.createElement('div');
-            tourDiv.innerHTML = `
-            <div class="tour-cards">
-                        <div class="image-box">
-                            <img src="https://images.unsplash.com/photo-1491466424936-e304919aada7?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=869&q=80"
-                                alt="Stakkholtsgja canyon ">
-                            <div class="overlay"></div>
-                            <div class="image-box-text">
-                                <h2>Stakkholtsgja</h2>
-                                <p>Mountains & Waterfall</p>
-                            </div>
-
-                        </div>
-                        <div class="tour-cards-text">
-                            <h1>${tour.name}</h1>
-                            <p>${tour.summary}</p>
-                            <div class="price">
-                                <p>${tour.price} <span>Per person</span></p>
-                                <h2>Duration:${tour.duration}</h2>
-                            </div>
-                        </div>
-                        
-                        ${ fetch('http://localhost:3000/api/v1/bookings')
-                            .then(response => response.json())
-                            .then
-                        }
-                        <button onClick="booktour('${tour._id}','${tour.price}')">Book Tour</button>
-
-            </div>
-      `;
-      resultsDiv.appendChild(tourDiv);
-    });
-})
-.catch(error => console.error(error));
-function getCookie(name) {
-    const cookieValue = document.cookie.match('(^|;)\\s*' + name + '\\s*=\\s*([^;]+)');
-    return cookieValue ? cookieValue.pop() : '';
+    <script>
+        function getCookie(name) {
+                const cookieValue = document.cookie.match('(^|;)\\s*' + name + '\\s*=\\s*([^;]+)');
+                return cookieValue ? cookieValue.pop() : '';
                 
-}
-    
-const ifloggedin  = async () =>{
-    try{
-        const response =  await fetch('http://localhost:3000/api/v1/users/getuserfromtoken', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify({
-                            token:getCookie('token')
-                        })
-                    })
-         const data =  await response.json()
-       
-         const namediv =  document.getElementById('nameorlogin')
-         namediv.href = 'logout.html'
-         namediv.innerHTML =  `Logout ${data.name}`
-         namediv.addEventListener('click',() =>{
-                    deleteCookie('token')
-                    namediv.href = 'index.html'
-         })
-        const addtour = document.getElementById('addtour')
-        const adduser = document.getElementById('adduser')
-        if(data.role == 'admin'){
-            console.log(data.role)
-            addtour.style.display = "block";
         }
-        if(data.role == 'system-admin'){
-            console.log(data.role)
-            adduser.style.display = 'block'
+        const id = getCookie('id')
+      // Fetch the tours data from the API
+      fetch('http://localhost:3000/api/v1/tours/addedby', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({id})
+      })
+        .then(response => response.json())
+        .then(data => {
+          const toursContainer = document.getElementById('tours');
+
+          // Loop through the tours and create a card for each one
+          data.users.forEach(tour => {
+            const card = document.createElement('div');
+            card.classList.add('card');
+
+            const title = document.createElement('h2');
+            title.textContent = tour.name;
+            card.appendChild(title);
+
+            const duration = document.createElement('p');
+            duration.textContent = `Duration: ${tour.duration}`;
+            card.appendChild(duration);
+
+            const maxGroupSize = document.createElement('p');
+            maxGroupSize.textContent = `Max Group Size: ${tour.maxGroupSize}`;
+            card.appendChild(maxGroupSize);
+
+            const difficulty = document.createElement('p');
+            difficulty.textContent = `Difficulty: ${tour.difficulty}`;
+            card.appendChild(difficulty);
+
+            const price = document.createElement('p');
+            price.textContent = `Price: ${tour.price}`;
+            card.appendChild(price);
+
+            const summary = document.createElement('p');
+            summary.textContent = tour.summary;
+            card.appendChild(summary);
+
+            const description = document.createElement('p');
+            description.textContent = tour.description;
+            card.appendChild(description);
+
+            const editButton = document.createElement('button');
+            editButton.classList.add('edit');
+            editButton.textContent = 'Edit';
+            editButton.addEventListener('click', () => {
+              const formContainer = document.getElementById('edit-form');
+              formContainer.classList.add('show');
+
+      // Fill the form with the tour data
+                const nameInput = formContainer.querySelector('#name');
+                const durationInput = formContainer.querySelector('#duration');
+                const maxGroupSizeInput = formContainer.querySelector('#max-group-size');
+                const difficultyInput = formContainer.querySelector('#difficulty');
+                const priceInput = formContainer.querySelector('#price');
+                const summaryInput = formContainer.querySelector('#summary');
+                const descriptionInput = formContainer.querySelector('#description');
+                const savebtn = document.getElementById('save-button')
+                savebtn.onclick = () =>{
+                  savedata(tour._id)
+                }
+
+                nameInput.value = tour.name;
+                durationInput.value = tour.duration;
+                maxGroupSizeInput.value = tour.maxGroupSize;
+                difficultyInput.value = tour.difficulty;
+                priceInput.value = tour.price;
+                summaryInput.value = tour.summary;
+                descriptionInput.value = tour.description;
+            });
+            card.appendChild(editButton);
+
+            const deleteButton = document.createElement('button');
+            deleteButton.classList.add('delete');
+            deleteButton.textContent = 'Delete';
+            deleteButton.addEventListener('click', () => {
+              // Handle delete button click
+            });
+            card.appendChild(deleteButton);
+
+            toursContainer.appendChild(card);
+          });
+        })
+        .catch(error => console.error(error));
+        const savebtn = document.getElementById('save-button')
+        savebtn.addEventListener('click',async () =>{
+               const formContainer = document.getElementById('edit-form');
+                const name = formContainer.querySelector('#name').value;
+                const duration = formContainer.querySelector('#duration').value;
+                const maxGroupSize = formContainer.querySelector('#max-group-size').value;;
+                const difficulty = formContainer.querySelector('#difficulty').value;;
+                const price = formContainer.querySelector('#price').value;;
+                const summary = formContainer.querySelector('#summary').value;;
+                const description = formContainer.querySelector('#description').value;
+                try {
+                
+                const response = await fetch(`http://localhost:3000/api/v1/tours/update/${id}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({name,duration,maxGroupSize,difficulty,price,description,summary,startDates,guide})
+                });
+
+                const data = await response.json();
+                if(data.status == 'success'){
+                    prompt('Tour added successfully')
+                }
+            } catch (error) {
+                console.log(error);
+            }
+        })
+       async function savedata(id){
+        console.log(id)
+        const formContainer = document.getElementById('edit-form');
+                const name = formContainer.querySelector('#name').value;
+                const duration = formContainer.querySelector('#duration').value;
+                const maxGroupSize = formContainer.querySelector('#max-group-size').value;;
+                const difficulty = formContainer.querySelector('#difficulty').value;;
+                const price = formContainer.querySelector('#price').value;;
+                const summary = formContainer.querySelector('#summary').value;;
+                const description = formContainer.querySelector('#description').value;
+                try {
+                
+                const response = await fetch(`http://localhost:3000/api/v1/tours/update/${id}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({name,duration,maxGroupSize,difficulty,price,description,summary})
+                });
+
+                const data = await response.json();
+                if(data.status == 'success'){
+                    prompt('Tour added successfully')
+                }
+            } catch (error) {
+                console.log(error);
+            }
         }
-       }
-       catch(err){
-        console.log(err)
-       }
-}
-if(getCookie('token')){
-    console.log(getCookie('token'))
-    ifloggedin()
-}
-function deleteCookie(name) {
-  document.cookie = name + '=;expires=Thu, 01 Jan 1970 00:00:01 GMT;';
-}
-async function booktour(tour,price){
-    const user = await getuserid()
-    const userid = user._id
-    const paid = false;
-    try {
-                    const response = await fetch('http://localhost:3000/api/v1/booking', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify({
-                            tour,
-                            userid,
-                            price,
-                            paid
-
-                        })
-                    });
-    
-                    const data = await response.json();
-                   if(data){
-                       alert('You have booked a tour')
-                   }
-                } catch (error) {
-                    console.log(error.message);
-                }
-}
-async function canceltour(tour,price){
-    const user = await getuserid()
-    const paid = false;
-    try {
-                    const response = await fetch('http://localhost:3000/api/v1/booking', {
-                        method: 'DELETE',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify({
-                            tour,
-                            user,
-                            price,
-                            paid
-
-                        })
-                    });
-    
-                    const data = await response.json();
-                    
-                   console.log(data)
-                } catch (error) {
-                    console.log(error);
-                }
-}  
-    
-    
-  
-  
     </script>
+  </body>
 </html>

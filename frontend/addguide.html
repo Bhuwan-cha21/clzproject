@@ -71,7 +71,6 @@
                 const data = await response.json();
                 if(data.status == 'success'){
                     alert('Guide added successfully')
-                    window.location.href= 'index.html'
                 }else{
                     const errorplacer = document.getElementById('error')
                     errorplacer.innerText = data.message

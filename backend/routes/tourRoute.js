@@ -1,13 +1,23 @@
 const express = require('express')
 const tourController = require('../controller/tourController')
 const authController = require('../controller/authController')
+const Booking = require('../models/bookingModel')
 const Tour = require('../models/tourModel');
 const router = express.Router();
 
 
 //param middleware
 // router.param('id', tourController.checkId)
-
+router.get('/numberofbookings/:id', async (req, res) => {
+  console.log(req.params.id)
+  try {
+    const bookings = await Booking.countDocuments({ tour: req.params.id });
+    res.json(bookings);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Server Error' });
+  }
+});
 router.post('/addedby', async (req, res) => {
         
         try {
@@ -20,6 +30,7 @@ router.post('/addedby', async (req, res) => {
         }
 });
 
+router.put('/update/:id',tourController.updateTour)
 router.route('/top-5-cheap').get(tourController.aliasTopTours, tourController.getAllTours)
 
 router

@@ -1,4 +1,3 @@
-<!DOCTYPE html>
 <html>
 
 <head>
@@ -31,9 +30,12 @@
                 <li ><a id="addguide"   style="display: none;"  href="./addguide.html">Add Guide</a></li>
                 <li ><a id="tours"   style="display: none;"  href="./tours.html"> Your Tours</a></li>
                 <li ><a id="guides"   style="display: none;"  href="./guides.html"> Your Guides</a></li>
-
             </ul>
-
+            <div class="btn-group">
+                <a href="recommend.html" class="btn btn-try">
+                    Recommended Tours
+                </a>
+            </div>
         </div>
     </nav>
 
@@ -384,23 +386,101 @@
         function deleteCookie(name) {
             document.cookie = name + '=;expires=Thu, 01 Jan 1970 00:00:01 GMT;';
         }                  
- const resultsDiv = document.getElementById('main-container')
-     
+        const resultsDiv = document.getElementById('main-container')
+        
+        fetch('http://localhost:3000/api/v1/tours',{
+            method:'GET'
+        })
+            .then(response => response.json())
+            .then(data => {
+        
+        
+            data.data.forEach(async tour => {
+                const tourDiv = document.createElement('div');
+tourDiv.classList.add('tour-cards');
 
-fetch('http://localhost:3000/api/v1/tours', {
-    method: 'GET'
-})
-.then(response => response.json())
-.then(data => {
-    data.data.forEach(tour => {
-        const tourDiv = document.createElement('div');
-        const name = document.createElement('p')
-        name.innerText(tour.name)
-        tourDiv.appendChild(name)
+const imageBox = document.createElement('div');
+imageBox.classList.add('image-box');
+
+const image = document.createElement('img');
+image.setAttribute('src', 'https://images.unsplash.com/photo-1491466424936-e304919aada7?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=869&q=80');
+image.setAttribute('alt', 'Stakkholtsgja canyon ');
+
+const overlay = document.createElement('div');
+overlay.classList.add('overlay');
+
+const imageBoxText = document.createElement('div');
+imageBoxText.classList.add('image-box-text');
+
+const h2 = document.createElement('h2');
+h2.textContent = 'Stakkholtsgja';
+
+const p = document.createElement('p');
+p.textContent = 'Mountains & Waterfall';
+
+imageBoxText.appendChild(h2);
+imageBoxText.appendChild(p);
+
+imageBox.appendChild(image);
+imageBox.appendChild(overlay);
+imageBox.appendChild(imageBoxText);
+
+const tourCardsText = document.createElement('div');
+tourCardsText.classList.add('tour-cards-text');
+
+const h1 = document.createElement('h1');
+h1.textContent = tour.name;
+
+const p2 = document.createElement('p');
+p2.textContent = tour.summary;
+
+const price = document.createElement('div');
+price.classList.add('price');
+
+const p3 = document.createElement('p');
+p3.textContent = tour.price + ' ';
+const span = document.createElement('span');
+span.textContent = 'Per person';
+p3.appendChild(span);
+
+const h22 = document.createElement('h2');
+h22.textContent = 'Duration:' + tour.duration;
+
+price.appendChild(p3);
+price.appendChild(h22);
+
+tourCardsText.appendChild(h1);
+tourCardsText.appendChild(p2);
+tourCardsText.appendChild(price);
+tourDiv.appendChild(imageBox);
+tourDiv.appendChild(tourCardsText);        
+const response =  await fetch(`http://localhost:3000/api/v1/tours/numberofbookings/${tour._id}`)
+const data =  await response.json()
+if(tour.maxGroupSize >= data){
+    const button = document.createElement('button');
+    button.addEventListener('click', function() {
+    booktour(tour._id, tour.price);
     });
-    
-});
+    button.textContent = 'Book Tour';
+    tourDiv.appendChild(button);
+}
+else {
+    const full = document.createElement('p')
+    p.innerText = 'SEATS NOT AVAILABLE'
+    tourDiv.appendChild(full)
+}
 
+               
+
+
+
+
+
+
+      resultsDiv.appendChild(tourDiv);
+    });
+})
+.catch(error => console.error(error));
 function getCookie(name) {
     const cookieValue = document.cookie.match('(^|;)\\s*' + name + '\\s*=\\s*([^;]+)');
     return cookieValue ? cookieValue.pop() : '';
@@ -427,7 +507,7 @@ const ifloggedin  = async () =>{
                     deleteCookie('token')
                     namediv.href = 'index.html'
          })
-        const addtour = document.getElementById('addtour')
+         const addtour = document.getElementById('addtour')
         const adduser = document.getElementById('adduser')
         const addguide = document.getElementById('addguide')
         const guides = document.getElementById('guides')
@@ -457,8 +537,8 @@ function deleteCookie(name) {
   document.cookie = name + '=;expires=Thu, 01 Jan 1970 00:00:01 GMT;';
 }
 async function booktour(tour,price){
-    const currentuser = await getuserid()
-    const user = currentuser._id
+    const user = await getuserid()
+    const userid = user._id
     const paid = false;
     try {
                     const response = await fetch('http://localhost:3000/api/v1/booking', {
@@ -468,7 +548,7 @@ async function booktour(tour,price){
                         },
                         body: JSON.stringify({
                             tour,
-                            user,
+                            userid,
                             price,
                             paid
 

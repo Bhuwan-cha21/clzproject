@@ -330,6 +330,7 @@ exports.getToursWithin = catchAsync(async (req, res, next) => {
 exports.searchTour =   catchAsync(async (req, res, next) => { 
     try {
         const { q } = req.query;
+        console.log(q)
         const tours = await Tour.find({
           $or: [
             { name: { $regex: q, $options: 'i' } },

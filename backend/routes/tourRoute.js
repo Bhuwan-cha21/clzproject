@@ -29,7 +29,7 @@ router.post('/addedby', async (req, res) => {
           res.status(500).json({ message: 'Server Error' });
         }
 });
-
+router.route('/search').get(tourController.searchTour)
 router.put('/update/:id',tourController.updateTour)
 router.route('/top-5-cheap').get(tourController.aliasTopTours, tourController.getAllTours)
 

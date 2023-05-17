@@ -2,9 +2,12 @@ const multer  = require('multer')
 const sharp = require('sharp');
 
 const User = require('./../models/userModel');
+const Token = require('./../models/tokens');
 const catchAsync = require('./../utils/catchAsync');
 const AppError = require('./../utils/appError');
 const factory = require('./handelfactory');
+const Email = require('./../utils/email');
+var bcrypt = require('bcryptjs');
 
 //don't save to disk original file save after resizing
 // const multerStorage = multer.diskStorage({
@@ -16,45 +19,86 @@ const factory = require('./handelfactory');
 //         cb(null, `user-${req.user.id}-${Date.now()}.${ext}`)
 //       }
 // })
-
-const multerStorage = multer.memoryStorage(); //saving image as buffer not in any local storage
-
-const multerFilter = (req, file, cb) => {
-    if(file.mimetype.startsWith('image')){
-        cb(null, true)
+exports.saveotp = async (req, res, next) => {
+    const { email } = req.body;
+    const user = await User.findOne({ email });
+  
+    if (!user) {
+      return res.status(404).send({ message: 'User not found' });
     }
-    else{
-        cb(new AppError('Not an image! Please upload only images', 400), false)
+  
+    try {
+      const generateRandomNumber = () => {
+        var randomNumber = Math.floor(Math.random() * (999999 - 100000 + 1)) + 100000;
+        return randomNumber.toString();
+      };
+  
+      const otp = generateRandomNumber();
+  
+      const tokenforuser = await Token.findOne({ email });
+  
+      if (!tokenforuser) {
+        const newToken = new Token({
+          email: email,
+          tokens: [{ token: otp }]
+        });
+        await newToken.save();
+      } else {
+        tokenforuser.tokens.push({ token: otp });
+        await tokenforuser.save();
+      }
+      await new Email(user).sendOtp(otp);
+      res.send({ message: 'Token saved successfully', status : 201 });
+      
+    } catch (err) {
+      console.error(err);
+      res.status(500).send({ message: 'Unable to save token' });
+    }
+  };
+  
+exports.checkOtp = async (req,res,next) =>{
+    const { email, token } = req.body;
+    console.log(token)
+
+  try {
+    const userToken = await Token.findOne({ email, 'tokens.token': token });
+
+    if (!userToken) {
+      return res.send({ message: 'Token not found, Please enter correct one' , status: 404});
+    }
+
+    res.send({ message: 'Token is valid' , status : 200});
+  } catch (err) {
+    console.error(err);
+    res.status(500).send({ message: 'Unable to check token' });
+  }
+}
+
+exports.changePassword  = async(req,res,next) =>{
+    const {email,  newPassword} = req.body;
+    try {
+      const hashedPassword = await bcrypt.hash(newPassword, 12);
+        const user = await User.findOneAndUpdate({ email },{password : hashedPassword});
+        if (!user) {
+            return res.status(404).send({ message: 'User not found' });
+          }
+        user.save()
+        res.send({ message: 'Reset password link sent successfully',status :200 });
+    }catch(err){
+        console.error(err);
+        res.status(500).send({ message: 'Unable to reset password' });
     }
 }
-const upload = multer({ 
-    storage: multerStorage,
-    fileFilter: multerFilter 
-})
+exports.deleteTour = factory.deleteOne(User);
+exports.updateUser = factory.updateOne(User)
 
-exports.uploadUserPhoto = upload.single('photo');
 
-//resizing user photo middleware
-exports.resizeUserPhoto = async (req, res, next) => {
-    if(!req.file) return next();
 
-    //giving file name which is used in our next handler function
-    req.file.filename = `user-${req.user.id}-${Date.now()}.jpeg`;
 
-    await sharp(req.file.buffer)
-        .resize(500, 500)
-        .toFormat('jpeg')
-        .jpeg({ quality: 90 })
-        .toFile(`uploads/${req.file.filename}`)
-    next();
-}
 
-//function to filter out unwanted fields
-const filterObj = (obj, ...allowedFields) => {
-    Object.keys(obj).forEach(el => {
-        if(!allowedFields.includes(el)) delete obj[el]
-    })
-}
+
+
+
 
 
 exports.getAllUsers = factory.getAll(User);

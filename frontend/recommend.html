@@ -8,13 +8,35 @@
     <!-- css  -->
     <link rel="stylesheet" href="public/css/sty.css">
     <script type="text/javascript" src="./public/javascript/nav.js"></script>
+    <style>
+            .container {
+            display: flex;
+            justify-content: center; /* Centers the items horizontally */
+            align-items: center;
+            width: 100%;
+             /* Centers the items vertically *//* Adjust the height as needed */
+            }
+
+            .centered, input {
+                display: flex;
+                width: 80%;
+                height: 50px;
+
+            }
+            #sbtn{width: 10%;}
+    </style>
 
 
 </head>
 
 <body>
-    <input type="text" id="searchtext" placeholder="search">
-    <button onclick="showsearch()"> Search</button>
+    <div class="container">
+        <div class="centered">
+          <input type="text" id="searchtext" placeholder="Search">
+          <button id="sbtn" onclick="showsearch()">Search</button>
+        </div>
+      </div>
+      
     <section class="tour" id="tour">
      <div class="main-container" id="main-container">
        <div class="tour-cards">
@@ -91,7 +113,7 @@ const imageBox = document.createElement('div');
 imageBox.classList.add('image-box');
 
 const image = document.createElement('img');
-image.setAttribute('src', 'https://images.unsplash.com/photo-1491466424936-e304919aada7?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=869&q=80');
+image.setAttribute('src', `../../${tour.imageCover} `);
 image.setAttribute('alt', 'Stakkholtsgja canyon ');
 
 const overlay = document.createElement('div');
@@ -100,14 +122,9 @@ overlay.classList.add('overlay');
 const imageBoxText = document.createElement('div');
 imageBoxText.classList.add('image-box-text');
 
-const h2 = document.createElement('h2');
-h2.textContent = 'Stakkholtsgja';
 
-const p = document.createElement('p');
-p.textContent = 'Mountains & Waterfall';
 
-imageBoxText.appendChild(h2);
-imageBoxText.appendChild(p);
+
 
 imageBox.appendChild(image);
 imageBox.appendChild(overlay);
@@ -121,6 +138,8 @@ h1.textContent = tour.name;
 
 const p2 = document.createElement('p');
 p2.textContent = tour.summary;
+const p6 = document.createElement('p');
+p6.textContent = tour.description;
 
 const price = document.createElement('div');
 price.classList.add('price');
@@ -144,6 +163,7 @@ tourDiv.appendChild(imageBox);
 tourDiv.appendChild(tourCardsText);        
 const response =  await fetch(`http://localhost:3000/api/v1/tours/numberofbookings/${tour._id}`)
 const data =  await response.json()
+if(getCookie('token')){
 if(tour.maxGroupSize >= data){
     const button = document.createElement('button');
     button.addEventListener('click', function() {
@@ -156,6 +176,12 @@ else {
     const full = document.createElement('p')
     p.innerText = 'SEATS NOT AVAILABLE'
     tourDiv.appendChild(full)
+}}else{
+    const login = document.createElement("a")
+    login.href ='login.html'
+    login.textContent = 'Log in to book a tour';
+    login.setAttribute("id", "loginid");
+    tourDiv.appendChild(login)
 }
 
                
@@ -170,8 +196,8 @@ else {
 })
 .catch(error => console.error(error));
 async function booktour(tour,price){
-    const user = await getuserid()
-    const userid = user._id
+    const userdata = await getuserid()
+    const user = userdata._id
     const paid = false;
     try {
                     const response = await fetch('http://localhost:3000/api/v1/booking', {
@@ -181,7 +207,7 @@ async function booktour(tour,price){
                         },
                         body: JSON.stringify({
                             tour,
-                            userid,
+                            user,
                             price,
                             paid
 
@@ -217,8 +243,8 @@ const imageBox = document.createElement('div');
 imageBox.classList.add('image-box');
 
 const image = document.createElement('img');
-image.setAttribute('src', 'https://images.unsplash.com/photo-1491466424936-e304919aada7?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=869&q=80');
-image.setAttribute('alt', 'Stakkholtsgja canyon ');
+image.setAttribute('src', `../../${tour.imageCover} `);
+image.setAttribute('alt', 'Cover Image ');
 
 const overlay = document.createElement('div');
 overlay.classList.add('overlay');
@@ -248,6 +274,8 @@ h1.textContent = tour.name;
 const p2 = document.createElement('p');
 p2.textContent = tour.summary;
 
+const p6 = document.createElement('p');
+p6.textContent = tour.description;
 const price = document.createElement('div');
 price.classList.add('price');
 
@@ -265,11 +293,14 @@ price.appendChild(h22);
 
 tourCardsText.appendChild(h1);
 tourCardsText.appendChild(p2);
+tourCardsText.appendChild
+tourCardsText.appendChild(p6);
 tourCardsText.appendChild(price);
 tourDiv.appendChild(imageBox);
 tourDiv.appendChild(tourCardsText);        
 const response =  await fetch(`http://localhost:3000/api/v1/tours/numberofbookings/${tour._id}`)
 const data =  await response.json()
+if(!getCookie()){
 if(tour.maxGroupSize >= data){
     const button = document.createElement('button');
     button.addEventListener('click', function() {
@@ -282,6 +313,13 @@ else {
     const full = document.createElement('p')
     p.innerText = 'SEATS NOT AVAILABLE'
     tourDiv.appendChild(full)
+}
+}else{
+    const login = document.createElement("a")
+    login.href ='login.html'
+    login.textContent = 'Log in to book a tour';
+    login.setAttribute("id", "loginid");
+    tourDiv.appendChild(login)
 }
 
                

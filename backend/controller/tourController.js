@@ -191,7 +191,19 @@ exports.getTour = factory.getOne(Tour, {path: 'reviews'})
     // }
     
 // })
-
+exports.tourforguide = async (req, res) => {
+    guideId = req.params.id
+    console.log(guideId)
+  
+    try {
+      // Find documents with the provided guide ID
+      const documents = await Tour.find({ guides: { $in: [guideId] } });
+  
+      res.json(documents);
+    } catch (error) {
+      res.status(500).json({ error: 'An error occurred while retrieving documents.' });
+    }
+  };
 
 exports.postTour = factory.createOne(Tour);
 

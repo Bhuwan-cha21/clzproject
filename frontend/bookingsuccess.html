@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+        <h1>Please wait till we verify your result</h1>
+</body>
+    <script>
+        const currentURL = window.location.search;
+        console.log(currentURL)
+        const params = new URLSearchParams(currentURL);
+        const pipx = params.get('pidx');
+        console.log(pipx)
+       async  function getresult (){
+        const response = await fetch('http://localhost:3000/verify', {
+                          method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({pidx : pipx})})
+                        console.log(response)
+                        const data = await response.json()
+                 if(data.status == 'success'){
+                     alert('Tour booked successfully')
+                    window.location.href = 'http://127.0.0.1:5500/frontend/index.html'
+        }
+                        
+       }
+       getresult()
+    </script>
+</html>

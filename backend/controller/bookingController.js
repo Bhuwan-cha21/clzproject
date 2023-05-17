@@ -5,7 +5,24 @@ const catchAsync = require('../utils/catchAsync')
 const AppError = require('../utils/appError')
 const Booking = require('../models/bookingModel')
 const factory = require('./handelfactory')
-
+const axios = require('axios');
+exports.bookingsofuser  =  async (req, res) => {
+ 
+    try {
+      const userId = req.params.id
+      
+      const bookings = await Booking.find({ user: userId })
+      .populate('user', '-__v -passwordChangedAt')
+      .populate('tour', 'name')
+      if (bookings.length === 0) {
+        return res.status(404).json({ message: 'User has no bookings' });
+      }
+  
+      res.json({ bookings });
+    } catch (error) {
+      console.log(err)
+    }
+  };
 exports.getCheckoutSession = catchAsync(async (req, res, next) => {
     /* 
     1) Get the currently booked tour
@@ -46,7 +63,24 @@ exports.createBookingCheckout = catchAsync(async(req, res, next) => {
     res.redirect(req.originalUrl.split('?')[0]);
 });
 
-exports.createBooking = factory.createOne(Booking);
+exports.createBooking =  catchAsync(async (req, res, next) => {
+  
+  
+  try{
+   
+
+      const doc = await Booking.create(req.body);
+      
+      res.status(201).json({
+          status: 'success',
+          data: {
+              doc
+          }
+      })
+  }catch(err){
+     res.send(err)
+  }
+})
 exports.getBooking = factory.getOne(Booking);
 exports.getAllBookings = factory.getAll(Booking);
 exports.updateBooking = factory.updateOne(Booking);

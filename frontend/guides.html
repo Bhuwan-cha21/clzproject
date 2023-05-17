@@ -151,8 +151,25 @@
             const deleteButton = document.createElement('button');
             deleteButton.classList.add('delete');
             deleteButton.textContent = 'Delete';
-            deleteButton.addEventListener('click', () => {
-              // Handle delete button click
+            deleteButton.addEventListener('click', async () => {
+              try {
+                
+                const response = await fetch(`http://localhost:3000/api/v1/users/${id}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                const data = await response.json();
+                console.log(data)
+                if(data.status == 200){
+                    alert('Guide Deleted successfully')
+                    window.location.href= 'guides.html'
+                }
+            } catch (error) {
+                console.log(error);
+            }
             });
             card.appendChild(deleteButton);
 
@@ -162,27 +179,29 @@
         .catch(error => console.error(error));
         const savebtn = document.getElementById('save-button')
         savebtn.addEventListener('click',async () =>{
-               const formContainer = document.getElementById('edit-form');
-                const name = formContainer.querySelector('#name').value;
-                const email = formContainer.querySelector('#email').value;
+            console.log(id)
+            //    const formContainer = document.getElementById('edit-form');
+            //     const name = formContainer.querySelector('#name').value;
+            //     console.log(user._id)
+               
                 
-                try {
+            //     try {
                 
-                const response = await fetch(`http://localhost:3000/api/v1/tours/update/${id}`, {
-                    method: 'PUT',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({name,duration,maxGroupSize,difficulty,price,description,summary,startDates,guide})
-                });
+            //     const response = await fetch(`http://localhost:3000/api/v1/users/update/${user._id}`, {
+            //         method: 'PUT',
+            //         headers: {
+            //             'Content-Type': 'application/json'
+            //         },
+            //         body: JSON.stringify({email})
+            //     });
 
-                const data = await response.json();
-                if(data.status == 'success'){
-                    prompt('Tour added successfully')
-                }
-            } catch (error) {
-                console.log(error);
-            }
+            //     const data = await response.json();
+            //     if(data.status == 'success'){
+            //         prompt('Tour added successfully')
+            //     }
+            // } catch (error) {
+            //     console.log(error);
+            // }
         })
         
     </script>

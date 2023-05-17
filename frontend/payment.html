@@ -1,0 +1,51 @@
+<!-- <html>
+<head>
+  <title>PayPal Sandbox Integration</title>
+  
+</head>
+<body>
+  <h1>Pay with PayPal Sandbox</h1>
+
+  <form id="paymentForm" action="http://localhost:3000/pay" method="POST">
+    <label for="amount">Amount:</label>
+    <input type="text" id="amount" name="amount" required><br><br>
+
+    <label for="description">Description:</label>
+    <input type="text" id="description" name="description" required><br><br>
+
+    <button type="submit">Pay with PayPal</button>
+  </form>
+
+  
+</body>
+</html> -->
+<html>
+<head>
+  <title>PayPal Sandbox Integration</title>
+  
+</head>
+<body>
+  <h1>Pay with PayPal Sandbox</h1>
+
+  <form id="paymentForm" action="http://localhost:3000/pay" method="POST">
+    <label for="amount">Amount:</label>
+    <input type="text" id="amount" name="amount" required><br><br>
+
+    <label for="description">Description:</label>
+    <input type="text" id="description" name="description" required><br><br>
+
+    <button type="submit">Pay with PayPal</button>
+  </form>
+
+  
+</body>
+<script>
+   const form = document.getElementById(paymentForm)
+   form.onsubmit(async (event) =>{
+      event.handelDefault()
+      const amount = document.getElementById('amount')
+      const desc = document.getElementById('description')
+      await fetch(`http://localhost:3000/pay?amount=${amount}&desc=${desc}`, {method:"POST"})
+   })
+</script>
+</html>

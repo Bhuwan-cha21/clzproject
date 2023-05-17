@@ -81,8 +81,7 @@
   </head>
   <body>
     <div id="tours"></div>
-    <div id="tours"></div>
-    <a href="index.html">Back to home</a>
+      <a href="index.html">Back to home</a>
     <div class="form-container" id="edit-form">
       <h2>Edit Tour</h2>
       <form>
@@ -117,7 +116,8 @@
                 return cookieValue ? cookieValue.pop() : '';
                 
         }
-        const id = getCookie('id')
+        var id = getCookie('id')
+       
       // Fetch the tours data from the API
       fetch('http://localhost:3000/api/v1/tours/addedby', {
         method: 'POST',
@@ -179,7 +179,8 @@
                 const summaryInput = formContainer.querySelector('#summary');
                 const descriptionInput = formContainer.querySelector('#description');
                 const savebtn = document.getElementById('save-button')
-                savebtn.onclick = () =>{
+                savebtn.onclick = (e) =>{
+                  e.preventDefault()
                   savedata(tour._id)
                 }
 
@@ -197,7 +198,7 @@
             deleteButton.classList.add('delete');
             deleteButton.textContent = 'Delete';
             deleteButton.addEventListener('click', () => {
-              // Handle delete button click
+              deletetour(tour._id)
             });
             card.appendChild(deleteButton);
 
@@ -205,36 +206,38 @@
           });
         })
         .catch(error => console.error(error));
-        const savebtn = document.getElementById('save-button')
-        savebtn.addEventListener('click',async () =>{
-               const formContainer = document.getElementById('edit-form');
-                const name = formContainer.querySelector('#name').value;
-                const duration = formContainer.querySelector('#duration').value;
-                const maxGroupSize = formContainer.querySelector('#max-group-size').value;;
-                const difficulty = formContainer.querySelector('#difficulty').value;;
-                const price = formContainer.querySelector('#price').value;;
-                const summary = formContainer.querySelector('#summary').value;;
-                const description = formContainer.querySelector('#description').value;
-                try {
+        // const savebtn = document.getElementById('save-button')
+        // savebtn.addEventListener('click',async () =>{
+        //       console.log('clicked')
+        //        const formContainer = document.getElementById('edit-form');
+        //         const name = formContainer.querySelector('#name').value;
+        //         const duration = formContainer.querySelector('#duration').value;
+        //         const maxGroupSize = formContainer.querySelector('#max-group-size').value;;
+        //         const difficulty = formContainer.querySelector('#difficulty').value;;
+        //         const price = formContainer.querySelector('#price').value;;
+        //         const summary = formContainer.querySelector('#summary').value;;
+        //         const description = formContainer.querySelector('#description').value;
                 
-                const response = await fetch(`http://localhost:3000/api/v1/tours/update/${id}`, {
-                    method: 'PUT',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({name,duration,maxGroupSize,difficulty,price,description,summary,startDates,guide})
-                });
+        //         try {
+                
+        //         const response = await fetch(`http://localhost:3000/api/v1/tours/update/${id}`, {
+        //             method: 'PATCH',
+        //             headers: {
+        //                 'Content-Type': 'application/json'
+        //             },
+        //             body: JSON.stringify({name,duration,maxGroupSize,difficulty,price,description,summary,addedBy:id})
+        //         });
 
-                const data = await response.json();
-                if(data.status == 'success'){
-                    prompt('Tour added successfully')
-                }
-            } catch (error) {
-                console.log(error);
-            }
-        })
+        //         const data = await response.json();
+        //         if(data.status == 'success'){
+        //             prompt('Tour udapted successfully')
+        //         }
+        //     } catch (error) {
+        //         console.log(error);
+        //     }
+        // })
        async function savedata(id){
-        console.log(id)
+        
         const formContainer = document.getElementById('edit-form');
                 const name = formContainer.querySelector('#name').value;
                 const duration = formContainer.querySelector('#duration').value;
@@ -243,10 +246,11 @@
                 const price = formContainer.querySelector('#price').value;;
                 const summary = formContainer.querySelector('#summary').value;;
                 const description = formContainer.querySelector('#description').value;
+              
                 try {
                 
                 const response = await fetch(`http://localhost:3000/api/v1/tours/update/${id}`, {
-                    method: 'PUT',
+                    method: 'PATCH',
                     headers: {
                         'Content-Type': 'application/json'
                     },
@@ -255,7 +259,28 @@
 
                 const data = await response.json();
                 if(data.status == 'success'){
+                  window.location.href= 'tours.html'
                     prompt('Tour added successfully')
+                }
+            } catch (error) {
+                console.log(error);
+            }
+        }
+        async function deletetour(id){
+          try {
+                
+                const response = await fetch(`http://localhost:3000/api/v1/tours/${id}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                const data = await response.json();
+                console.log(data)
+                if(data.status == 200){
+                    alert('Tour Deleted successfully')
+                    window.location.href= 'tours.html'
                 }
             } catch (error) {
                 console.log(error);

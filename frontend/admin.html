@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Admins</title>
+    <style>
+        .card {
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        padding: 16px;
+        margin-bottom: 16px;
+      }
+
+      .card h2 {
+        margin-top: 0;
+      }
+
+      .card p {
+        margin-top: 8px;
+        margin-bottom: 8px;
+      }
+
+      .card button {
+        background-color: #4CAF50;
+        color: white;
+        padding: 8px 16px;
+        margin-right: 8px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+      }
+
+      .card button.edit {
+        background-color: #2196F3;
+      }
+
+      .card button.delete {
+        background-color: #F44336;
+      }
+
+      .form-container {
+  display: none;
+  position: absolute;
+  z-index: 1;
+  top: 50%;
+  width: 80%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  padding: 16px;
+}
+
+      .form-container.show {
+        display: block;
+      }
+
+      .form-container form {
+        display: flex;
+        flex-direction: column;
+      }
+
+      .form-container input {
+        margin-bottom: 8px;
+        padding: 8px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+      }
+
+      .form-container button {
+        background-color: #4CAF50;
+        color: white;
+        padding: 8px 16px;
+        margin-top: 8px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="tours"></div>
+    <div id="tours"></div>
+    <a href="index.html">Back to home</a>
+    <div class="form-container" id="edit-form">
+      <h2>Edit Tour</h2>
+      <form>
+        <label for="name">Name:</label>
+        <input type="text" id="name" />
+
+        <label for="email">Email:</label>
+        <input type="text" id="email" />
+
+
+        <button type="submit" id="save-button">Save</button>
+      </form>
+    </div>
+
+    <script>
+        function getCookie(name) {
+                const cookieValue = document.cookie.match('(^|;)\\s*' + name + '\\s*=\\s*([^;]+)');
+                return cookieValue ? cookieValue.pop() : '';
+                
+        }
+        const id = getCookie('id')
+      // Fetch the tours data from the API
+      fetch('http://localhost:3000/api/v1/users/addedby', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({id})
+      })
+
+        .then(response => response.json())
+        .then(data => {
+          console.log(data.length)
+          if(!data.length){
+              alert("You are yet to add admin")
+          }
+          const toursContainer = document.getElementById('tours');
+
+          // Loop through the tours and create a card for each one
+          data.users.forEach(user => {
+            const card = document.createElement('div');
+            card.classList.add('card');
+
+            const name = document.createElement('h2');
+            name.textContent = `Name: ${user.name}`;
+            card.appendChild(name);
+
+            const email = document.createElement('p');
+            email.textContent = `Email: ${user.email}`;
+            card.appendChild(email);
+
+
+            const editButton = document.createElement('button');
+            editButton.classList.add('edit');
+            editButton.textContent = 'Edit';
+            editButton.addEventListener('click', () => {
+              const formContainer = document.getElementById('edit-form');
+              formContainer.classList.add('show');
+
+      // Fill the form with the user data
+                const name = formContainer.querySelector('#name');
+                const email = formContainer.querySelector('#email');
+            
+
+                name.value =user.name;
+                email.value = user.email;
+               
+            });
+            card.appendChild(editButton);
+
+            const deleteButton = document.createElement('button');
+            deleteButton.classList.add('delete');
+            deleteButton.textContent = 'Delete';
+            deleteButton.addEventListener('click', async () => {
+              try {
+                
+                const response = await fetch(`http://localhost:3000/api/v1/users/${user._id}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                const data = await response.json();
+                console.log(data)
+                if(data.status == 200){
+                    alert('Guide Deleted successfully')
+                    window.location.href= 'guides.html'
+                }
+            } catch (error) {
+                console.log(error);
+            }
+            });
+            card.appendChild(deleteButton);
+
+            toursContainer.appendChild(card);
+          });
+        })
+        .catch(error => console.error(error));
+        const savebtn = document.getElementById('save-button')
+        savebtn.addEventListener('click',async () =>{
+            console.log(id)
+            //    const formContainer = document.getElementById('edit-form');
+            //     const name = formContainer.querySelector('#name').value;
+            //     console.log(user._id)
+               
+                
+            //     try {
+                
+            //     const response = await fetch(`http://localhost:3000/api/v1/users/update/${user._id}`, {
+            //         method: 'PUT',
+            //         headers: {
+            //             'Content-Type': 'application/json'
+            //         },
+            //         body: JSON.stringify({email})
+            //     });
+
+            //     const data = await response.json();
+            //     if(data.status == 'success'){
+            //         prompt('Tour added successfully')
+            //     }
+            // } catch (error) {
+            //     console.log(error);
+            // }
+        })
+        
+    </script>
+  </body>
+</html>

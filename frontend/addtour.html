@@ -13,8 +13,6 @@
       <label for="name">Name:</label>
       <input type="text" id="name" name="name" required minlength="10" maxlength="40">
     
-      <label for="slug">Slug:</label>
-      <input type="text" id="slug" name="slug">
     
       <label for="duration">Duration (in days):</label>
       <input type="number" id="duration" name="duration" required>
@@ -46,8 +44,7 @@
       <label for="image-cover">Cover image:</label>
       <input type="file" id="image-cover" name="imageCover" required><br>
     
-      <label for="images">Images:</label><br>
-      <input type="file" id="images" name="images"><br>
+
     
       <label for="start-dates">Start dates:</label><br>
       <input type="date" id="start-dates" name="startDates"><br>
@@ -107,7 +104,6 @@
             event.preventDefault();
             const name = document.getElementById('name').value;
             const duration = document.getElementById('duration').value;
-            const slug = document.getElementById('slug').value;
             const maxGroupSize = document.getElementById('max-group-size').value;
             const difficulty = document.getElementById('difficulty').value;
             const guide = document.getElementById('guide').value;
@@ -118,7 +114,7 @@
             const startDates = document.getElementById('start-dates').value;
             const addedBy = await getCookie('id')
     
-            const imageCover = await fileToBase64(imagedata)
+            const imageCover = imagedata.name;
            
 
             try {
@@ -128,12 +124,18 @@
                     headers: {
                         'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify({name,duration,slug,maxGroupSize,difficulty,price,description,summary,startDates,addedBy,guide})
+                    body: JSON.stringify({name,duration,maxGroupSize,imageCover,difficulty,price,description,summary,startDates,addedBy,guide})
                 });
 
                 const data = await response.json();
                 if(data.status == 'success'){
-                    prompt('Tour added successfully')
+                    alert('Tour added successfully')
+                }
+                else{
+                  console.log(data.code)
+                   if(data.code == '11000'){
+                      alert("Duplicate name, Enter new")
+                   }
                 }
             } catch (error) {
                 console.log(error);

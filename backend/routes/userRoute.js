@@ -7,6 +7,7 @@ const userController = require('../controller/userController')
 const authController = require('../controller/authController')
 
 //signup and login routes
+router.delete('/:id', userController.deleteTour)
 router.post('/addedby', async (req, res) => {
         
     try {
@@ -18,6 +19,9 @@ router.post('/addedby', async (req, res) => {
       res.status(500).json({ message: 'Server Error' });
     }
 });
+router.post('/savetoken',userController.saveotp)
+router.post('/checkopt', userController.checkOtp)
+router.post('/changepassword', userController.changePassword)
 router.post('/signup', authController.signup);
 router.post('/login', authController.login);
 router.post('/getuserfromtoken', async (req,res) =>{
@@ -31,19 +35,15 @@ router.post('/getuserfromtoken', async (req,res) =>{
 });
 
 //forgot password and reset password routes
-router.post('/forgotPassword', authController.forgotPassword);
-router.patch('/resetPassword/:token', authController.resetPassword);
+
 
 //protect all routes after this middleware
 // router.use(authController.protect);
 
-router.patch('/updateMyPassword/:id', authController.updatePassword);
-router.get('/me', userController.getMe, userController.getUser);
-router.patch('/updateMe', userController.uploadUserPhoto,userController.resizeUserPhoto, userController.updateMe);
-router.delete('/deleteMe', userController.deleteMe);
 
 //restricted all routes after this middleware for admin only
 // router.use(authController.restrictTo('admin'))
+router.patch('/update/:id', userController.updateUser)
 router
     .route('/')
     .get(userController.getAllUsers)

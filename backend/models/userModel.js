@@ -56,6 +56,7 @@ userSchema.pre('save', async function(next){
     if(!this.isModified('password')) return next();
 
     //hash password
+    console.log(this.password)
     this.password = await bcrypt.hash(this.password, 12);
 
     //delete passwordConfirm
@@ -63,41 +64,7 @@ userSchema.pre('save', async function(next){
     next();
 })
 
-// //pre middleware to set passwordChangedAt to current timestamp
-// userSchema.pre('save', function(next){
-//     //checking is password is modified or document is new
-//     if(!this.isModified('password') || this.isNew) return next();
 
-//     this.passwordChangedAt = Date.now() - 1000; //subtract 1 second because jwt can slower sometimes
-//     next();
-// });
-
-// userSchema.pre(/^find/, function(next){
-//     this.find({active: true});
-//     next();
-// })
-
-// //instance methods to check if password was changed after token is issued
-// userSchema.methods.changedPasswordAfter = function(JWTTimestamp){
-//     if(this.passwordChangedAt){
-//         const changedTimestamp = parseInt(this.passwordChangedAt.getTime() / 1000, 10);
-//         return JWTTimestamp < changedTimestamp;
-//     }
-//     return false;
-// }
-
-// //instance method to create password reset token
-// userSchema.methods.createPasswordResetToken = function(){
-//     const resetToken = crypto.randomBytes(32).toString('hex');
-
-//     //encrypting token before saving to db
-//     this.passwordResetToken = crypto.createHash('sha256').update(resetToken).digest('hex');
-//     this.passwordResetExpires = Date.now() + 10 * 60 * 1000;
-//     // console.log({resetToken}, this.passwordResetToken);
-
-//     //while returnig no need to return encrypted token to client
-//     return resetToken;
-// }
 
 const User = mongoose.model('User', userSchema);
 

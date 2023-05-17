@@ -8,6 +8,7 @@ const router = express.Router();
 
 //param middleware
 // router.param('id', tourController.checkId)
+router.delete('/:id', tourController.deleteTour)
 router.get('/numberofbookings/:id', async (req, res) => {
   console.log(req.params.id)
   try {
@@ -22,15 +23,17 @@ router.post('/addedby', async (req, res) => {
         
         try {
           const users = await Tour.find({ addedBy: req.body.id });
-          res.json({ status: 'success',users});
-          console.log(users)
+          const length = users.length
+          res.json({ status: 'success',users,length});
+          
         } catch (err) {
-          console.error(err);
+          
           res.status(500).json({ message: 'Server Error' });
         }
 });
+router.get('/tourforguide/:id', tourController.tourforguide)
 router.route('/search').get(tourController.searchTour)
-router.put('/update/:id',tourController.updateTour)
+router.patch('/update/:id',tourController.updateTour)
 router.route('/top-5-cheap').get(tourController.aliasTopTours, tourController.getAllTours)
 
 router

@@ -4,14 +4,14 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SignUp</title>
+    <title>Add Guide</title>
     <link rel="stylesheet" href="./public/css/SignUp.css">
     <script src="./public/javascript/SignUpValidation.js"></script>
 </head>
 <body>
     <form id="signup-form" class="container" onsubmit="return signUpValidation()">
         <div class="">
-            <h1>SignUp</h1>
+            <h1 id="error">Add Guide</h1>
             <div class="form-control">
                 <label for="name">Name</label>
                 <input id="name" name="name" class="" required>
@@ -29,11 +29,15 @@
                 <label for="password">Confirm Password</label>
                 <input type="password" id="cpassword" name="passwordConfirm" required />
             </div>
-            <button type="submit" class="btn">SingUp</button>
+            <button type="submit" class="btn">Add Guide</button>
             <a href="index.html">Back to home page</a>
         </div>
     </form>
-
+    <div id="success-box" style="display: none;">
+        <p>Guide added successfully!</p>
+        <button id="go-home-btn">Go back to home</button>
+        <button id="add-more-btn">Add more</button>
+      </div>
     <script>
         function getCookie(name) {
                     const cookieValue = document.cookie.match('(^|;)\\s*' + name + '\\s*=\\s*([^;]+)');
@@ -70,7 +74,9 @@
 
                 const data = await response.json();
                 if(data.status == 'success'){
-                    alert('Guide added successfully')
+                    const successBox = document.getElementById('success-box');
+                 
+                 successBox.style.display = 'block';
                 }else{
                     const errorplacer = document.getElementById('error')
                     errorplacer.innerText = data.message

@@ -26,6 +26,7 @@
 
             <button type="submit" class="btn">Login</button>
             <p class="text">Dont have a account?<a href="./SignUp.html">Register</a></a></p>
+            <p class="text">Forget Password<a href="./forgetpassword.html">Change here</a></a></p>
         </form>
         <script>
             const form = document.getElementById('login-form');
@@ -35,6 +36,7 @@
     
                 const email = form.elements['email'].value;
                 const password = form.elements['password'].value;
+              
     
                 try {
                     const response = await fetch('http://localhost:3000/api/v1/users/login', {

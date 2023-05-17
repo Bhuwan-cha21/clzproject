@@ -5,7 +5,7 @@ const bookingController = require('../controller/bookingController');
 const authController = require('../controller/authController');
 
 
-
+router.get('/bookingofuser/:id', bookingController.bookingsofuser)
 router
     .post('/checkout-session/:tourId', 
     bookingController.getCheckoutSession);
@@ -21,5 +21,6 @@ router
     .get(bookingController.getBooking)
     .patch(bookingController.updateBooking)
     .delete(bookingController.deleteBooking)
+
 
 module.exports = router;

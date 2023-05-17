@@ -8,6 +8,35 @@
     <!-- css  -->
     <link rel="stylesheet" href="public/css/sty.css">
     <script type="text/javascript" src="./public/javascript/nav.js"></script>
+    <style>
+        #loginid{
+            font-size: 20px;
+            margin-right: 300px;
+            margin-bottom: 130px;
+            border-radius: 10px;
+            color: black;
+            padding-top: 3px;
+            background-color: wheat;
+            border: 2px solid white;
+        }
+        #book{
+            font-size: 20px;
+            margin-right: 350px;
+            margin-bottom: 130px;
+            border-radius: 10px;
+            color: black;
+            padding-top: 3px;
+            background-color: wheat;
+            border: 2px solid white;
+            width: auto;
+        }
+        .full{
+           margin-bottom: 150px;
+           color:red;
+           height: 100px;
+           width: 100px;
+        }
+    </style>
 
 
 </head>
@@ -17,11 +46,10 @@
     <nav class="nav">
         <div class="container">
 
-            <h1 class="logog"><a href="#container">Mywebsite</a> </h1>
+            
             <ul>
                 <li><a href="#banner" class="current">Home</a></li>
                 <li><a href="#about">About Us</a></li>
-                <li><a href="#tour">Tours</a></li>
                 <li><a href="#media">Media</a></li>
                 <li><a href="#contact">Contact Us</a></li>
                 <li ><a id="nameorlogin" href="./Login.html">Login</a></li>
@@ -30,9 +58,13 @@
                 <li ><a id="addguide"   style="display: none;"  href="./addguide.html">Add Guide</a></li>
                 <li ><a id="tours"   style="display: none;"  href="./tours.html"> Your Tours</a></li>
                 <li ><a id="guides"   style="display: none;"  href="./guides.html"> Your Guides</a></li>
+                <li ><a id="addadmin" style="display:none;" href="./addadmin.html">Add admin</a></li>
+                <li ><a id="admin" style="display:none;" href="./admin.html">Your admin</a></li>
+                <li ><a id="tourforguide" style="display:none;" href="./tourforguide.html">Your tours</a></li>
+                <li ><a id="usertours" style="display:none;" href="./usertours.html">Your tours</a></li>
             </ul>
             <div class="btn-group">
-                <a href="recommend.html" class="btn btn-try">
+                <a href="recommend.html" style="display:block;" id="recmd" class="btn btn-try">
                     Recommended Tours
                 </a>
             </div>
@@ -46,8 +78,8 @@
 
         <section class="banner" id="banner">
             <div class="banner-text">
-                <h1>Tour and Hotel Recommendation</h1>
-                <P>Tour and Hotel Recommendation provides u the best tourism places. Book online.</P>
+                <h1>Tour and Hotel </h1>
+                <P>Tour and Hotel  provides u the best tourism places. Book online.</P>
                 <a href="#" class="btn btn-get"><span>Explore</span></a>
             </div>
             <div class="overlay2">
@@ -365,6 +397,11 @@
 
 </body>
      <script>
+        function getCookie(name) {
+            const cookieValue = document.cookie.match('(^|;)\\s*' + name + '\\s*=\\s*([^;]+)');
+            return cookieValue ? cookieValue.pop() : '';
+                
+   }
        const getuserid  = async () =>{
             try{
                 const response =  await fetch('http://localhost:3000/api/v1/users/getuserfromtoken', {
@@ -385,8 +422,11 @@
         } 
         function deleteCookie(name) {
             document.cookie = name + '=;expires=Thu, 01 Jan 1970 00:00:01 GMT;';
-        }                  
+        }  
+       
+                      
         const resultsDiv = document.getElementById('main-container')
+        
         
         fetch('http://localhost:3000/api/v1/tours',{
             method:'GET'
@@ -403,9 +443,9 @@ const imageBox = document.createElement('div');
 imageBox.classList.add('image-box');
 
 const image = document.createElement('img');
-image.setAttribute('src', 'https://images.unsplash.com/photo-1491466424936-e304919aada7?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=869&q=80');
-image.setAttribute('alt', 'Stakkholtsgja canyon ');
-
+image.setAttribute('src', `http://127.0.0.1:8080/${tour.imageCover}`);
+image.setAttribute('alt', 'Cover Image');
+console.log(tour.imageCover)
 const overlay = document.createElement('div');
 overlay.classList.add('overlay');
 
@@ -456,21 +496,35 @@ tourDiv.appendChild(imageBox);
 tourDiv.appendChild(tourCardsText);        
 const response =  await fetch(`http://localhost:3000/api/v1/tours/numberofbookings/${tour._id}`)
 const data =  await response.json()
-if(tour.maxGroupSize >= data){
+if(getCookie('token')){
+    if(tour.maxGroupSize >= data){
     const button = document.createElement('button');
+   
+    
+    button.setAttribute("id", "book");
     button.addEventListener('click', function() {
     booktour(tour._id, tour.price);
     });
     button.textContent = 'Book Tour';
     tourDiv.appendChild(button);
+    
 }
 else {
     const full = document.createElement('p')
     p.innerText = 'SEATS NOT AVAILABLE'
-    tourDiv.appendChild(full)
-}
+    full.setAttribute("class", "full");
+    full.style.color ='red'
 
-               
+    tourDiv.appendChild(full)
+}}else{
+    const login = document.createElement("a")
+    login.href ='login.html'
+   
+    login.textContent = 'Log in to book a tour';
+    login.setAttribute("id", "loginid");
+    tourDiv.appendChild(login)
+}
+          
 
 
 
@@ -481,11 +535,8 @@ else {
     });
 })
 .catch(error => console.error(error));
-function getCookie(name) {
-    const cookieValue = document.cookie.match('(^|;)\\s*' + name + '\\s*=\\s*([^;]+)');
-    return cookieValue ? cookieValue.pop() : '';
-                
-}
+
+
     
 const ifloggedin  = async () =>{
     try{
@@ -512,18 +563,37 @@ const ifloggedin  = async () =>{
         const addguide = document.getElementById('addguide')
         const guides = document.getElementById('guides')
         const tours = document.getElementById('tours')
+        const admin = document.getElementById('admin')
+        const addadmin =  document.getElementById('addadmin')
+        const recmd = document.getElementById('recmd')
+        const resultsDiv = document.getElementById('main-container')
+        const tourforguide = document.getElementById('tourforguide')
+        const userstours = document.getElementById('usertours')
         if(data.role == 'admin'){
             console.log(data.role)
             addtour.style.display = "block";
             addguide.style.display ="block"
             guides.style.display ="block"
             tours.style.display ="block"
+            recmd.style.display ="none"
 
         }
         if(data.role == 'system-admin'){
             console.log(data.role)
-            adduser.style.display = 'block'
+            admin.style.display = 'block'
+            addadmin.style.display = 'block'
+            recmd.style.display ="none"
         }
+        if(data.role =='guide'){
+            tourforguide.style.display ='block'
+        }
+        if(data.role != 'user'){
+            resultsDiv.style.display = 'none'
+        }
+        if(data.role == 'user'){
+            userstours.style.display = 'block'
+        }
+
        }
        catch(err){
         console.log(err)
@@ -537,32 +607,73 @@ function deleteCookie(name) {
   document.cookie = name + '=;expires=Thu, 01 Jan 1970 00:00:01 GMT;';
 }
 async function booktour(tour,price){
-    const user = await getuserid()
-    const userid = user._id
-    const paid = false;
-    try {
-                    const response = await fetch('http://localhost:3000/api/v1/booking', {
-                        method: 'POST',
+        
+    const userdata = await getuserid()
+    console.log(userdata)
+    const user = userdata._id
+    const paid = true;
+    
+
+        // const payresponse = await fetch('http://localhost:3000/pay', {
+        //                 method: 'POST',
+        //                 headers: {
+        //                     'Content-Type': 'application/json'
+        //                 }
+                        
+        // });
+        
+        // const payresult = await payresponse.json();
+        
+        
+            const response = await fetch('http://localhost:3000/api/v1/booking', {
+                    method: 'POST',
                         headers: {
                             'Content-Type': 'application/json'
                         },
                         body: JSON.stringify({
                             tour,
-                            userid,
+                            user,
                             price,
                             paid
 
                         })
                     });
     
-                    const data = await response.json();
+                   const data = await response.json();
+                  
                    if(data){
-                       alert('You have booked a tour')
-                   }
-                } catch (error) {
+                 
+                    const idForPayment  = data.data.doc._id
+             
+                    try{
+                        console.log(price)
+                        const body =  {
+                        "return_url":"http://127.0.0.1:5500/frontend/bookingsuccess.html",
+                            "website_url":"http://127.0.0.1:5500",
+                            "amount":price*100,
+                            "purchase_order_id": idForPayment,
+                            "purchase_order_name":idForPayment
+                        }
+                      const response = await fetch('http://localhost:3000/pay', {
+                          method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(body)})
+                        console.log(response)
+                        const url = await response.json()
+                        window.location.href = url
+                  
+                  
+                } 
+                catch (error) {
                     console.log(error);
-                }
-}
+              }
+            }
+            
+                 
+}        
+
 async function canceltour(tour,price){
     const user = await getuserid()
     const paid = false;
@@ -583,7 +694,6 @@ async function canceltour(tour,price){
     
                     const data = await response.json();
                     
-                   console.log(data)
                 } catch (error) {
                     console.log(error);
                 }

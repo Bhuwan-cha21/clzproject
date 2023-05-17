@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Tours</title>
+    <style>
+        .card {
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        padding: 16px;
+        margin-bottom: 16px;
+      }
+
+      .card h2 {
+        margin-top: 0;
+      }
+
+      .card p {
+        margin-top: 8px;
+        margin-bottom: 8px;
+      }
+
+      .card button {
+        background-color: #4CAF50;
+        color: white;
+        padding: 8px 16px;
+        margin-right: 8px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+      }
+
+      .card button.edit {
+        background-color: #2196F3;
+      }
+
+      .card button.delete {
+        background-color: #F44336;
+      }
+
+      .form-container {
+  display: none;
+  position: absolute;
+  z-index: 1;
+  top: 50%;
+  width: 80%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  padding: 16px;
+}
+
+      .form-container.show {
+        display: block;
+      }
+
+      .form-container form {
+        display: flex;
+        flex-direction: column;
+      }
+
+      .form-container input {
+        margin-bottom: 8px;
+        padding: 8px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+      }
+
+      .form-container button {
+        background-color: #4CAF50;
+        color: white;
+        padding: 8px 16px;
+        margin-top: 8px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="tours"></div>
+      <a href="index.html">Back to home</a>
+    <div class="form-container" id="edit-form">
+      <h2>Edit Tour</h2>
+      <form>
+        <label for="name">Name:</label>
+        <input type="text" id="name" />
+
+        <label for="duration">Duration:</label>
+        <input type="text" id="duration" />
+
+        <label for="max-group-size">Max Group Size:</label>
+        <input type="text" id="max-group-size" />
+
+        <label for="difficulty">Difficulty:</label>
+        <input type="text" id="difficulty" />
+
+        <label for="price">Price:</label>
+        <input type="text" id="price" />
+
+        <label for="summary">Summary:</label>
+        <textarea id="summary"></textarea>
+
+        <label for="description">Description:</label>
+        <textarea id="description"></textarea>
+
+        <button  id="save-button">Save</button>
+      </form>
+    </div>
+
+    <script>
+        function getCookie(name) {
+                const cookieValue = document.cookie.match('(^|;)\\s*' + name + '\\s*=\\s*([^;]+)');
+                return cookieValue ? cookieValue.pop() : '';
+                
+        }
+        var id = getCookie('id')
+       console.log(id)
+      // Fetch the tours data from the API
+      fetch(`http://localhost:3000/api/v1/tours/tourforguide/${id}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+      })
+        .then(response => response.json())
+        .then(data => {
+            console.log(data[0].name)
+            
+          const toursContainer = document.getElementById('tours');
+
+          // Loop through the tours and create a card for each one
+          data.forEach(tour => {
+            console.log(tour)
+            const card = document.createElement('div');
+            card.classList.add('card');
+
+            const title = document.createElement('h2');
+            title.textContent = tour.name;
+            card.appendChild(title);
+
+            const duration = document.createElement('p');
+            duration.textContent = `Duration: ${tour.duration}`;
+            card.appendChild(duration);
+
+            const maxGroupSize = document.createElement('p');
+            maxGroupSize.textContent = `Max Group Size: ${tour.maxGroupSize}`;
+            card.appendChild(maxGroupSize);
+
+            const difficulty = document.createElement('p');
+            difficulty.textContent = `Difficulty: ${tour.difficulty}`;
+            card.appendChild(difficulty);
+
+            const price = document.createElement('p');
+            price.textContent = `Price: ${tour.price}`;
+            card.appendChild(price);
+
+            const summary = document.createElement('p');
+            summary.textContent = tour.summary;
+            card.appendChild(summary);
+
+            const description = document.createElement('p');
+            description.textContent = tour.description;
+            card.appendChild(description);
+
+           
+
+            
+            toursContainer.appendChild(card);
+          });
+        })
+        .catch(error => console.error(error));
+    
+       
+        
+    </script>
+  </body>
+</html>

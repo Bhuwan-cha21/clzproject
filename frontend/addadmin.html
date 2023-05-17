@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SignUp</title>
+    <link rel="stylesheet" href="./public/css/SignUp.css">
+    <script src="./public/javascript/SignUpValidation.js"></script>
+</head>
+<body>
+    <form id="signup-form" class="container" onsubmit="return signUpValidation()">
+        <div class="">
+            <h1 id="error">Add Admin</h1>
+            <div class="form-control">
+                <label for="name">Name</label>
+                <input id="name" name="name" class="" required>
+            </div>
+            <div class="form-control">
+                <label for="email">Email Address</label>
+                <input type="email" id="email" name="email" required>
+            </div>
+    
+            <div class="form-control">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" required />
+            </div>
+            <div class="form-control">
+                <label for="password">Confirm Password</label>
+                <input type="password" id="cpassword" name="passwordConfirm" required />
+            </div>
+            <button type="submit" class="btn">Add admin</button>
+            <a href="index.html">Back to home page</a>
+        </div>
+    </form>
+    <div id="success-box" style="display: none;">
+        <p>Admin added successfully!</p>
+        <a href='index.html'>Go back to home</a>
+        <button id="add-more-btn">Add more</button>
+      </div>
+    <script>
+        function getCookie(name) {
+                    const cookieValue = document.cookie.match('(^|;)\\s*' + name + '\\s*=\\s*([^;]+)');
+                    return cookieValue ? cookieValue.pop() : '';
+                
+    }
+        const form = document.getElementById('signup-form');
+        form.addEventListener('submit', async (event) => {
+            event.preventDefault();
+
+            const name = form.elements['name'].value;
+            const email = form.elements['email'].value;
+            const password = form.elements['password'].value;
+            const passwordConfirm = form.elements['passwordConfirm'].value;
+            const role = 'admin'
+            const addedBy = await getCookie('id')
+    
+
+            try {
+                const response = await fetch('http://localhost:3000/api/v1/users/signup', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        name,
+                        email,
+                        password,
+                        passwordConfirm,
+                        role,
+                        addedBy
+                    })
+                });
+
+                const data = await response.json();
+                if(data.status == 'success'){
+                    const successBox = document.getElementById('success-box');
+                 
+                 successBox.style.display = 'block';
+                }else{
+                    const errorplacer = document.getElementById('error')
+                    errorplacer.innerText = data.message
+                }
+            } catch (error) {
+                console.log(error);
+            }
+        });
+    </script>
+</body>
+</html>

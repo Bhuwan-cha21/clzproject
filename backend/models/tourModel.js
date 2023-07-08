@@ -58,13 +58,13 @@ const tourSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: 'User'
     },
-    guides: [
+    guide: 
         {
             type: mongoose.Schema.ObjectId,
             ref: 'User'
         }
         
-    ],
+    ,
   }, {
     toJSON: { virtuals: true },
   });
@@ -88,13 +88,7 @@ tourSchema.pre('save', function(next){
     next()
 });
 
-tourSchema.pre(/^find/, function(next){
-    this.populate({
-        path: 'guides',
-        select: '-__v -passwordChangedAt'
-    })
-    next();
-});
+
 
 tourSchema.post(/^find/, function(docs, next){
     console.log(`Query took ${Date.now() - this.start} milliseconds`)

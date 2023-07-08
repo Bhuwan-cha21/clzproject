@@ -8,6 +8,7 @@ const Tour = require('./../models/tourModel')
 exports.deleteOne = (Model) => catchAsync(async (req, res, next) => {
         console.log(req.params.id)
     const doc =  await Model.findByIdAndDelete(req.params.id)
+    
     res.send({
         status: 200
     })

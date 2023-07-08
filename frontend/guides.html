@@ -2,7 +2,7 @@
 <html>
   <head>
     <meta charset="UTF-8" />
-    <title>Tours</title>
+    <title>Guides</title>
     <style>
         .card {
         border: 1px solid #ddd;
@@ -140,7 +140,34 @@
       // Fill the form with the user data
                 const name = formContainer.querySelector('#name');
                 const email = formContainer.querySelector('#email');
-            
+                const savebtn = document.getElementById('save-button')
+                savebtn.addEventListener('click' , async (e) =>{
+                      e.preventDefault()
+                      const formContainer = document.getElementById('edit-form');
+                  const name = formContainer.querySelector('#name').value;
+                  console.log(user._id)
+               
+                
+                  try {
+                
+                  const response = await fetch(`http://localhost:3000/api/v1/users/update/${user._id}`, {
+                      method: 'PATCH',
+                      headers: {
+                          'Content-Type': 'application/json'
+                      },
+                      body: JSON.stringify({name})
+                  });
+
+                  const data = await response.json();
+                  console.log(data)
+                  if(data.status == 'success'){
+                     alert('Guide edited Successfully')
+                     window.location.href ='guides.html'
+                  }
+              } catch (error) {
+                  console.log(error);
+              }
+                })  
 
                 name.value =user.name;
                 email.value = user.email;
@@ -154,7 +181,7 @@
             deleteButton.addEventListener('click', async () => {
               try {
                 
-                const response = await fetch(`http://localhost:3000/api/v1/users/${id}`, {
+                const response = await fetch(`http://localhost:3000/api/v1/users/${user._id}`, {
                     method: 'DELETE',
                     headers: {
                         'Content-Type': 'application/json'
@@ -177,32 +204,8 @@
           });
         })
         .catch(error => console.error(error));
-        const savebtn = document.getElementById('save-button')
-        savebtn.addEventListener('click',async () =>{
-            console.log(id)
-            //    const formContainer = document.getElementById('edit-form');
-            //     const name = formContainer.querySelector('#name').value;
-            //     console.log(user._id)
-               
-                
-            //     try {
-                
-            //     const response = await fetch(`http://localhost:3000/api/v1/users/update/${user._id}`, {
-            //         method: 'PUT',
-            //         headers: {
-            //             'Content-Type': 'application/json'
-            //         },
-            //         body: JSON.stringify({email})
-            //     });
-
-            //     const data = await response.json();
-            //     if(data.status == 'success'){
-            //         prompt('Tour added successfully')
-            //     }
-            // } catch (error) {
-            //     console.log(error);
-            // }
-        })
+    
+         
         
     </script>
   </body>

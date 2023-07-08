@@ -133,6 +133,7 @@ fetch(`http://localhost:3000/api/v1/booking/bookingofuser/${id}`, {
 
     // Loop through the tours and create a card for each one
     data.bookings.forEach(booking => {
+
       const tour = booking.tour;
 
       const card = document.createElement('div');
@@ -144,7 +145,8 @@ fetch(`http://localhost:3000/api/v1/booking/bookingofuser/${id}`, {
       card.appendChild(title);
       
       const paidStatus = document.createElement('p');
-      paidStatus.textContent = `Paid: ${tour.paid ? 'Yes' : 'No'}`;
+      console.log(booking.paid)
+      paidStatus.textContent = `Paid: ${booking.paid ? 'Yes' : 'No'}`;
       card.appendChild(paidStatus);
       
 

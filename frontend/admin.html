@@ -116,9 +116,7 @@
         .then(response => response.json())
         .then(data => {
           console.log(data.length)
-          if(!data.length){
-              alert("You are yet to add admin")
-          }
+
           const toursContainer = document.getElementById('tours');
 
           // Loop through the tours and create a card for each one
@@ -135,30 +133,14 @@
             card.appendChild(email);
 
 
-            const editButton = document.createElement('button');
-            editButton.classList.add('edit');
-            editButton.textContent = 'Edit';
-            editButton.addEventListener('click', () => {
-              const formContainer = document.getElementById('edit-form');
-              formContainer.classList.add('show');
-
-      // Fill the form with the user data
-                const name = formContainer.querySelector('#name');
-                const email = formContainer.querySelector('#email');
             
-
-                name.value =user.name;
-                email.value = user.email;
-               
-            });
-            card.appendChild(editButton);
 
             const deleteButton = document.createElement('button');
             deleteButton.classList.add('delete');
             deleteButton.textContent = 'Delete';
             deleteButton.addEventListener('click', async () => {
               try {
-                
+                console.log(user._id)
                 const response = await fetch(`http://localhost:3000/api/v1/users/${user._id}`, {
                     method: 'DELETE',
                     headers: {
@@ -169,8 +151,8 @@
                 const data = await response.json();
                 console.log(data)
                 if(data.status == 200){
-                    alert('Guide Deleted successfully')
-                    window.location.href= 'guides.html'
+                    alert('Admin  Deleted successfully')
+                    window.location.href= 'admin.html'
                 }
             } catch (error) {
                 console.log(error);
@@ -183,31 +165,7 @@
         })
         .catch(error => console.error(error));
         const savebtn = document.getElementById('save-button')
-        savebtn.addEventListener('click',async () =>{
-            console.log(id)
-            //    const formContainer = document.getElementById('edit-form');
-            //     const name = formContainer.querySelector('#name').value;
-            //     console.log(user._id)
-               
-                
-            //     try {
-                
-            //     const response = await fetch(`http://localhost:3000/api/v1/users/update/${user._id}`, {
-            //         method: 'PUT',
-            //         headers: {
-            //             'Content-Type': 'application/json'
-            //         },
-            //         body: JSON.stringify({email})
-            //     });
-
-            //     const data = await response.json();
-            //     if(data.status == 'success'){
-            //         prompt('Tour added successfully')
-            //     }
-            // } catch (error) {
-            //     console.log(error);
-            // }
-        })
+        
         
     </script>
   </body>

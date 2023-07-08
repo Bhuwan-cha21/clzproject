@@ -64,11 +64,14 @@ exports.createBookingCheckout = catchAsync(async(req, res, next) => {
 });
 
 exports.createBooking =  catchAsync(async (req, res, next) => {
-  
+  const { tour, user, price } = req.body;
   
   try{
-   
-
+    const existingBooking = await Booking.findOne({ tour, user });
+    if( existingBooking){
+        res.json('')
+    }
+    else{
       const doc = await Booking.create(req.body);
       
       res.status(201).json({
@@ -77,6 +80,8 @@ exports.createBooking =  catchAsync(async (req, res, next) => {
               doc
           }
       })
+      console.log(doc)
+    }
   }catch(err){
      res.send(err)
   }

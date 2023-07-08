@@ -3,12 +3,23 @@
 <head>
     <meta charset='utf-8'>
     <meta http-equiv='X-UA-Compatible' content='IE=edge'>
-    <title>Tour and Hotel Recommendation</title>
+    <title>Tour and  Travel </title>
     <meta name='viewport' content='width=device-width, initial-scale=1'>
     <!-- css  -->
     <link rel="stylesheet" href="public/css/sty.css">
     <script type="text/javascript" src="./public/javascript/nav.js"></script>
     <style>
+                #loginid{
+            font-size: 20px;
+            height: 30px;
+            margin-right: 300px;
+            margin-bottom: 130px;
+            border-radius: 10px;
+            color: black;
+            padding-top: 3px;
+            background-color: wheat;
+            border: 2px solid white;
+        }
             .container {
             display: flex;
             justify-content: center; /* Centers the items horizontally */
@@ -39,35 +50,20 @@
       
     <section class="tour" id="tour">
      <div class="main-container" id="main-container">
-       <div class="tour-cards">
-        <div class="image-box">
-            <img src="https://images.unsplash.com/photo-1491466424936-e304919aada7?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=869&q=80"
-                alt="Stakkholtsgja canyon ">
-            <div class="overlay"></div>
-            <div class="image-box-text">
-                <h2>Stakkholtsgja</h2>
-                <p>Mountains & Waterfall</p>
-            </div>
+        <div class="tour-cards">
+            <div class="image-box">
+                <img src="http://127.0.0.1:8080/img/annapurna.jpg" alt="annapurna ">
+                <div class="overlay"></div>
 
+            </div>
+            <div class="tour-cards-text">
+                <h1>Annapurna Basecamp Trip</h1>
+                <p>Welcome to the Annapurna Base Camp trek, one of the most popular and scenic treks in
+                    Nepal. This trek takes you through a diverse landscape of lush forests, terraced fields,
+                    traditional villages, and stunning mountain vistas, culminating in the breathtaking view
+                    of the Annapurna massif from the base camp.</p>
+            </div>
         </div>
-        <div class="tour-cards-text">
-            <h1>Stakkholtsgja canyon Trip</h1>
-            <p>A Week long trip around the south iceland with hiking guides. Stakkholtsgjá is a wondrous
-                canyon, situated in Southern part of the Icelandic Highlands. It is highly-known for the
-                magical hiking trail that leads to a majestic waterfall. The gorge is a part of the
-                Þórsmörk
-                Nature Reserve. Every bit
-                of Stakkholtsgjá canyon shines out with picturesque beauty. Stakkholtsgjá is about a
-                hundred
-                meters deep.</p>
-            <a href="#" class="btn-map">
-
-                <span>View Route Map</span>
-            </a>
-            <div class="price">
-                <p>$5200 <span>Per person</span></p>
-                <h2>18 Days 36 Nights</h2>
-            </div>
         </div>
     </div>
 </div>
@@ -113,8 +109,8 @@ const imageBox = document.createElement('div');
 imageBox.classList.add('image-box');
 
 const image = document.createElement('img');
-image.setAttribute('src', `../../${tour.imageCover} `);
-image.setAttribute('alt', 'Stakkholtsgja canyon ');
+image.setAttribute('src', `http://127.0.0.1:8080/${tour.imageCover} `);
+
 
 const overlay = document.createElement('div');
 overlay.classList.add('overlay');
@@ -140,7 +136,8 @@ const p2 = document.createElement('p');
 p2.textContent = tour.summary;
 const p6 = document.createElement('p');
 p6.textContent = tour.description;
-
+const h23 = document.createElement('h2');
+h23.textContent = 'Start Date:' + tour.startDates[0];
 const price = document.createElement('div');
 price.classList.add('price');
 
@@ -158,6 +155,8 @@ price.appendChild(h22);
 
 tourCardsText.appendChild(h1);
 tourCardsText.appendChild(p2);
+tourCardsText.appendChild(p6);
+tourCardsText.appendChild(h23);
 tourCardsText.appendChild(price);
 tourDiv.appendChild(imageBox);
 tourDiv.appendChild(tourCardsText);        
@@ -196,32 +195,73 @@ else {
 })
 .catch(error => console.error(error));
 async function booktour(tour,price){
-    const userdata = await getuserid()
-    const user = userdata._id
-    const paid = false;
-    try {
-                    const response = await fetch('http://localhost:3000/api/v1/booking', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify({
-                            tour,
-                            user,
-                            price,
-                            paid
-
-                        })
-                    });
+        
+        const userdata = await getuserid()
+        console.log(userdata)
+        const user = userdata._id
+        const paid = true;
+        
     
-                    const data = await response.json();
-                   if(data){
-                       alert('You have booked a tour')
-                   }
-                } catch (error) {
-                    console.log(error);
+            // const payresponse = await fetch('http://localhost:3000/pay', {
+            //                 method: 'POST',
+            //                 headers: {
+            //                     'Content-Type': 'application/json'
+            //                 }
+                            
+            // });
+            
+            // const payresult = await payresponse.json();
+            
+            
+                const response = await fetch('http://localhost:3000/api/v1/booking', {
+                        method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({
+                                tour,
+                                user,
+                                price,
+                                paid
+    
+                            })
+                        });
+        
+                       const data = await response.json();
+                       if(data.status == 'success'){
+                     
+                        const idForPayment  = data.data.doc._id
+                 
+                        try{
+                            console.log(price)
+                            const body =  {
+                            "return_url":"http://127.0.0.1:5500/frontend/bookingsuccess.html",
+                                "website_url":"http://127.0.0.1:5500",
+                                "amount":price*100,
+                                "purchase_order_id": idForPayment,
+                                "purchase_order_name":idForPayment
+                            }
+                          const response = await fetch('http://localhost:3000/pay', {
+                              method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify(body)})
+                            console.log(response)
+                            const url = await response.json()
+                            window.location.href = url
+                      
+                      
+                    }
+                    catch (error) {
+                        console.log(error);
+                  }
+                }else{
+                    alert('You have already booked this tour')
                 }
-}
+                
+                     
+    }   
 function showsearch(){
     const searchtext = document.getElementById('searchtext').value;
     const resultsDiv = document.getElementById('main-container')
@@ -243,7 +283,7 @@ const imageBox = document.createElement('div');
 imageBox.classList.add('image-box');
 
 const image = document.createElement('img');
-image.setAttribute('src', `../../${tour.imageCover} `);
+image.setAttribute('src', `http://127.0.0.1:8080/${tour.imageCover}`);
 image.setAttribute('alt', 'Cover Image ');
 
 const overlay = document.createElement('div');
@@ -252,14 +292,11 @@ overlay.classList.add('overlay');
 const imageBoxText = document.createElement('div');
 imageBoxText.classList.add('image-box-text');
 
-const h2 = document.createElement('h2');
-h2.textContent = 'Stakkholtsgja';
 
-const p = document.createElement('p');
-p.textContent = 'Mountains & Waterfall';
 
-imageBoxText.appendChild(h2);
-imageBoxText.appendChild(p);
+
+
+
 
 imageBox.appendChild(image);
 imageBox.appendChild(overlay);
@@ -275,9 +312,13 @@ const p2 = document.createElement('p');
 p2.textContent = tour.summary;
 
 const p6 = document.createElement('p');
+console.log(tour)
 p6.textContent = tour.description;
+const h23 = document.createElement('h2');
+h23.textContent = 'Start Date:' + tour.startDates[0];
 const price = document.createElement('div');
 price.classList.add('price');
+
 
 const p3 = document.createElement('p');
 p3.textContent = tour.price + ' ';
@@ -293,6 +334,7 @@ price.appendChild(h22);
 
 tourCardsText.appendChild(h1);
 tourCardsText.appendChild(p2);
+tourCardsText.appendChild(h23);
 tourCardsText.appendChild
 tourCardsText.appendChild(p6);
 tourCardsText.appendChild(price);

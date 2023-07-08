@@ -197,10 +197,11 @@ exports.tourforguide = async (req, res) => {
   
     try {
       // Find documents with the provided guide ID
-      const documents = await Tour.find({ guides: { $in: [guideId] } });
+      const documents = await Tour.find({ guide:   guideId});
   
       res.json(documents);
     } catch (error) {
+        console.log(error)
       res.status(500).json({ error: 'An error occurred while retrieving documents.' });
     }
   };

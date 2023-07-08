@@ -82,33 +82,7 @@
   <body>
     <div id="tours"></div>
       <a href="index.html">Back to home</a>
-    <div class="form-container" id="edit-form">
-      <h2>Edit Tour</h2>
-      <form>
-        <label for="name">Name:</label>
-        <input type="text" id="name" />
-
-        <label for="duration">Duration:</label>
-        <input type="text" id="duration" />
-
-        <label for="max-group-size">Max Group Size:</label>
-        <input type="text" id="max-group-size" />
-
-        <label for="difficulty">Difficulty:</label>
-        <input type="text" id="difficulty" />
-
-        <label for="price">Price:</label>
-        <input type="text" id="price" />
-
-        <label for="summary">Summary:</label>
-        <textarea id="summary"></textarea>
-
-        <label for="description">Description:</label>
-        <textarea id="description"></textarea>
-
-        <button  id="save-button">Save</button>
-      </form>
-    </div>
+    
 
     <script>
         function getCookie(name) {
@@ -144,6 +118,9 @@
             const duration = document.createElement('p');
             duration.textContent = `Duration: ${tour.duration}`;
             card.appendChild(duration);
+            const startdate = document.createElement('p');
+            startdate.textContent = `Start Date: ${tour.startDates[0]}`;
+            card.appendChild(startdate);
 
             const maxGroupSize = document.createElement('p');
             maxGroupSize.textContent = `Max Group Size: ${tour.maxGroupSize}`;

@@ -7,6 +7,19 @@
     <title>Add tour</title>
     <link rel="stylesheet" href="public/css/addtour.css">
     <script src="./public/javascript/SignUpValidation.js"></script>
+    <style>
+      body{background-color: steelblue;
+
+      }
+        #gotohome{
+          text-decoration: none;
+           margin-top: 40px;
+           border: 2px solid red;
+           border-radius: 10px;
+           padding: 3px;
+           position:  relative;
+          }
+</style>
 </head>
 <body>
     <form id="tour-form" >
@@ -51,7 +64,7 @@
     
     
       <button type="submit">Submit</button>
-      <a href="index.html">Back to home page</a>
+      <a href="index.html" id="gotohome">Back to home page</a>
     </form>
 
     <script>
@@ -107,6 +120,7 @@
             const maxGroupSize = document.getElementById('max-group-size').value;
             const difficulty = document.getElementById('difficulty').value;
             const guide = document.getElementById('guide').value;
+            console.log(guide)
             const price = document.getElementById('price').value;
             const description = document.getElementById('description').value;
             const imagedata = document.getElementById('image-cover').files[0];
